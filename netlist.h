@@ -1,5 +1,8 @@
 #ifndef NETLIST_H
 #define NETLIST_H
+#include <stdlib.h>
+#include <stdio.h>
+#include "entree_sortie.h"
 
 struct segment;
 
