@@ -85,4 +85,15 @@ int lire_ligne(FILE *f, char* ligne, int *i, int *j, int *k);
     /* Replace le curseur au début de la ligne précédente */
 void rewind_line(FILE *f); /* /!\ NE FONCTIONNE PAS EN DEBUT DE FICHIER /!\ */
 
+
+
+    /* FONCTIONS POUR L'AFFICHAGE DE LA NETLIST */
+void afficher_netlist(Netlist *n, char *nomfichier);
+void afficher_reseau(FILE *f, Reseau *r);
+int compte_seg_reseau(Reseau *r, Cell_segment **cs);
+int chainage_cell_seg(Point *p, Cell_segment **cs);
+int seg_pas_dans_chaine(Cell_segment *cs, Segment *s);
+void afficher_points(FILE *f, Reseau *r);
+void afficher_segments(FILE *f, Cell_segment *cs);
+
 #endif /* NETLIST_H */
