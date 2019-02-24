@@ -95,5 +95,6 @@ int chainage_cell_seg(Point *p, Cell_segment **cs);
 int seg_pas_dans_chaine(Cell_segment *cs, Segment *s);
 void afficher_points(FILE *f, Reseau *r);
 void afficher_segments(FILE *f, Cell_segment *cs);
+void free_chaine_cs(Cell_segment **cs);
 
 #endif /* NETLIST_H */

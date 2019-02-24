@@ -138,7 +138,8 @@ void rewind_line(FILE *f){
 
 
 
-    /* AFFICHAGE DE LA NETLIST */
+                                /* AFFICHAGE DE LA NETLIST */
+    /* ------------------------------------------------------------------------------------- */
 void afficher_netlist(Netlist *n, char *nomfichier){
     FILE *f = fopen(nomfichier, "w");
     if(f == NULL){
@@ -155,18 +156,40 @@ void afficher_netlist(Netlist *n, char *nomfichier){
 }
 
 void afficher_reseau(FILE *f, Reseau *r){
-    Cell_segment *cs;
-    int nbseg = compte_seg_reseau(r, &cs);
+    Cell_segment **cs = malloc(sizeof(Cell_segment *));
+    int nbseg = compte_seg_reseau(r, cs);
     fprintf(f,"%d %d %d\n", r->NumRes, r->NbPt, nbseg);
     afficher_points(f, r);
-    afficher_segments(f, cs);
+    afficher_segments(f, *cs);
+    free_chaine_cs(cs);
+    free(cs);
 }
 
+
+void afficher_points(FILE *f, Reseau *r){
+    int i;
+    for(i=0;i<r->NbPt;i++){
+        fprintf(f, "  %d %d %d\n", i, (int) r->T_Pt[i]->x, (int) r->T_Pt[i]->y);
+    }
+}
+
+
+void afficher_segments(FILE *f, Cell_segment *cs){
+    Cell_segment *c = cs;
+    while(c != NULL){
+        fprintf(f, "  %d %d\n", c->seg->p1, c->seg->p2);
+        c=c->suiv;
+    }
+}
+
+
+
+    /* COMPTAGE DES SEGMENTS D'UN RESEAU */
 int compte_seg_reseau(Reseau *r, Cell_segment **cs){
     *cs = (Cell_segment *) malloc(sizeof(Cell_segment));
     (*cs)->suiv = NULL;
     (*cs)->seg = NULL;
-    int nb_seg = 0;
+    int nb_seg = 1;
     int i=0;
     for(i=0;i<r->NbPt;i++){
         nb_seg += chainage_cell_seg(r->T_Pt[i], cs);   
@@ -176,13 +199,12 @@ int compte_seg_reseau(Reseau *r, Cell_segment **cs){
 
 int chainage_cell_seg(Point *p, Cell_segment **cs){
     int nb_seg_pt = 0;
-
         /* Première insertion */
     if((*cs)->seg == NULL){
         (*cs)->seg = p->Lincid->seg;
     }
 
-    Cell_segment *c = *cs;
+    Cell_segment *c = p->Lincid;
     Cell_segment *nv_cs;
     while(c != NULL){
         if(seg_pas_dans_chaine(*cs, c->seg)){
@@ -202,22 +224,16 @@ int seg_pas_dans_chaine(Cell_segment *cs, Segment *s){
         if(c->seg == s){
             return 0;
         }
+        c = c->suiv;
     }
     return 1;
 }
 
-void afficher_points(FILE *f, Reseau *r){
-    int i;
-    for(i=0;i<r->NbPt;i++){
-        fprintf(f, "  %d %f %f\n", i, r->T_Pt[i]->x, r->T_Pt[i]->y);
-    }
-}
-
-
-void afficher_segments(FILE *f, Cell_segment *cs){
-    Cell_segment *c = cs;
-    while(c != NULL){
-        fprintf(f, "  %d %d\n", cs->seg->p1, cs->seg->p2);
-        c=c->suiv;
+void free_chaine_cs(Cell_segment **cs){
+    Cell_segment *prec = *cs;
+    while(*cs != NULL){
+        *cs = (*cs)->suiv;
+        free(prec);
+        prec = *cs;
     }
 }
