@@ -138,9 +138,9 @@ void rewind_line(FILE *f){
 
 
 
-                                /* AFFICHAGE DE LA NETLIST */
+                                /* REECRITURE DE LA NETLIST */
     /* ------------------------------------------------------------------------------------- */
-void afficher_netlist(Netlist *n, char *nomfichier){
+void ecrire_netlist(Netlist *n, char *nomfichier){
     FILE *f = fopen(nomfichier, "w");
     if(f == NULL){
         printf("Erreur ouverture fichier\n");
@@ -155,18 +155,18 @@ void afficher_netlist(Netlist *n, char *nomfichier){
     fclose(f);
 }
 
-void afficher_reseau(FILE *f, Reseau *r){
+void ecrire_reseau(FILE *f, Reseau *r){
     Cell_segment **cs = malloc(sizeof(Cell_segment *));
     int nbseg = compte_seg_reseau(r, cs);
     fprintf(f,"%d %d %d\n", r->NumRes, r->NbPt, nbseg);
-    afficher_points(f, r);
-    afficher_segments(f, *cs);
+    ecrire_points(f, r);
+    ecrire_segments(f, *cs);
     free_chaine_cs(cs);
     free(cs);
 }
 
 
-void afficher_points(FILE *f, Reseau *r){
+void ecrire_points(FILE *f, Reseau *r){
     int i;
     for(i=0;i<r->NbPt;i++){
         fprintf(f, "  %d %d %d\n", i, (int) r->T_Pt[i]->x, (int) r->T_Pt[i]->y);
@@ -174,7 +174,7 @@ void afficher_points(FILE *f, Reseau *r){
 }
 
 
-void afficher_segments(FILE *f, Cell_segment *cs){
+void ecrire_segments(FILE *f, Cell_segment *cs){
     Cell_segment *c = cs;
     while(c != NULL){
         fprintf(f, "  %d %d\n", c->seg->p1, c->seg->p2);
