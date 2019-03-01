@@ -26,3 +26,10 @@ void dessine_segments(reseau *r, SVGwriter *svg){
         SVGline(svg,  r->T_Pt[c->seg->p1]->x,  r->T_Pt[c->seg->p1]->y, r->T_Pt[c->seg->p2]->x, r->T_Pt[c->seg->p2]->y);
     }
 }
+
+void dessine_points(Reseau* r, SVGwriter* svg){
+    for(i=0; i<(r->NbPt); i++){
+        SVGpoint(svg, r->T_Pt[i]->x, r->T_Pt[i]->y);
+    }
+}
+
