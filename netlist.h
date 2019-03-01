@@ -90,7 +90,10 @@ void rewind_line(FILE *f); /* /!\ NE FONCTIONNE PAS EN DEBUT DE FICHIER /!\ */
     /* FONCTIONS POUR L'AFFICHAGE DE LA NETLIST */
 void ecrire_netlist(Netlist *n, char *nomfichier);
 void ecrire_reseau(FILE *f, Reseau *r);
+
+    /* Compte les segments d'un réseau et rend la liste chainée de ces segments par effet de bord */
 int compte_seg_reseau(Reseau *r, Cell_segment **cs);
+
 int chainage_cell_seg(Point *p, Cell_segment **cs);
 int seg_pas_dans_chaine(Cell_segment *cs, Segment *s);
 void ecrire_points(FILE *f, Reseau *r);

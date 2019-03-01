@@ -1,5 +1,3 @@
-
-
 int main(int argc, char** argv) {
     
     char* fname = argv[1] 
@@ -18,4 +16,13 @@ int main(int argc, char** argv) {
         
     }
     SVGfinalize(&svg);
+}
+
+void dessine_segments(reseau *r, SVGwriter *svg){
+    Cell_Segment *cs;
+    compte_seg_reseau(r, &cs);
+    Cell_Segment *c;
+    for(c=cs; c != NULL; c=c->suiv){
+        SVGline(svg,  r->T_Pt[c->seg->p1]->x,  r->T_Pt[c->seg->p1]->y, r->T_Pt[c->seg->p2]->x, r->T_Pt[c->seg->p2]->y);
+    }
 }

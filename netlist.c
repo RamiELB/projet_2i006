@@ -1,10 +1,5 @@
 #include "netlist.h"
 
-int main(int argc, char **argv){
-    Netlist *n = lecture_netlist("Instance_Netlist/c4.net");
-    afficher_netlist(n,"test.txt");
-}
-
 Netlist *lecture_netlist(char* nom_fichier){
     FILE *f = fopen(nom_fichier, "r");
     if(f == NULL){
@@ -150,7 +145,7 @@ void ecrire_netlist(Netlist *n, char *nomfichier){
     fprintf(f,"%d\n", n->NbRes);
 
     for(i=0;i<n->NbRes;i++){
-        afficher_reseau(f,n->T_Res[i]);
+        ecrire_reseau(f,n->T_Res[i]);
     }
     fclose(f);
 }
