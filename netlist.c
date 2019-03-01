@@ -198,7 +198,6 @@ int chainage_cell_seg(Point *p, Cell_segment **cs){
     if((*cs)->seg == NULL){
         (*cs)->seg = p->Lincid->seg;
     }
-
     Cell_segment *c = p->Lincid;
     Cell_segment *nv_cs;
     while(c != NULL){

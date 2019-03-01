@@ -12,5 +12,8 @@ netlist.o: netlist.c
 SVGwriter.o: SVGwriter.c
 	gcc -c $(CFLAGS) SVGwriter.c
 
+intersection.o: intersection.c
+	gcc -c $(CFLAGS) intersection.c
+	
 clean:
 	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html
