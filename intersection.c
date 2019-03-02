@@ -1,6 +1,8 @@
 #include "intersection.h"
 
 int intersection(Netlist *n, Segment *seg1, Segment *seg2){
+    /* 0 : Les segments ne se coupent pas.
+       1 : Les segments sont en intersection. */
     if(seg1->HouV == seg2->HouV){
         return 0;
     }
