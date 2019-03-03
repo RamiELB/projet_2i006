@@ -31,17 +31,6 @@ int intersection(Netlist *n, Segment *seg1, Segment *seg2){
 }
 
 int nb_segment(Netlist *n){
-    Cell_segment *cs;
-    int cpt = 0;
-    int i;
-    for(i=0;i<n->NbRes;i++){
-        cpt += compte_seg_reseau(n->T_Res[i], &cs);
-        free_chaine_cs(&cs);
-    }
-    return cpt;
-}
-
-int cpt_segments_netlist(Netlist *n){
     /* Fonction servant uniquement à compter les segments d'une netlist */
     int i, j;
     int cpt = 0;
@@ -59,36 +48,36 @@ int cpt_segments_netlist(Netlist *n){
     return cpt;
 }
 
-Cell_segment **tab_segments_netlist(Netlist *n){
-    int taille = nb_segment(n);
+Segment **tab_segments_netlist(Netlist *n, int *taille){
+    *taille = nb_segment(n);
     Cell_segment *cs_res;
-    Cell_segment **cs_netlist=malloc(taille * sizeof(Cell_segment *));
+    Segment **seg_netlist=malloc((*taille) * sizeof(Cell_segment *));
     int indice = 0;
     int i;
-    int nb_seg_res;
     for(i=0;i<n->NbRes;i++){
-        nb_seg_res = compte_seg_reseau(n->T_Res[i], &cs_res);
-        indice = ajout_liste_tab(cs_res, cs_netlist, indice);
+        compte_seg_reseau(n->T_Res[i], &cs_res);
+        indice = ajout_liste_tab(cs_res, seg_netlist, indice);
     }
+    return seg_netlist;
 }
 
-int ajout_liste_tab(Cell_segment *cs_res, Cell_segment **cs_netlist, int indice){
+int ajout_liste_tab(Cell_segment *cs_res, Segment **seg_netlist, int indice){
     Cell_segment *cs = cs_res;
     while( cs != NULL){
-        cs_netlist[indice] = cs;
+        seg_netlist[indice] = cs->seg;
         cs=cs->suiv;
         indice++;
     }
     return indice;
 }
 
-void intersect_naif(Netlist *n, Segment **tab_seg){
-    int taille_tab = cpt_segments_netlist(n);
+Segment **intersect_naif(Netlist *n, int *taille_tab){
+    Segment **tab_seg = tab_segments_netlist(n, taille_tab);
     int i;
     int j;
     Cell_segment *new_cell;
-    for(i=0; i<taille_tab; i++){
-        for(j=i; j<taille_tab; j++){
+    for(i=0; i<(*taille_tab); i++){
+        for(j=i; j<(*taille_tab); j++){
             if(intersection(n, tab_seg[i], tab_seg[j])){
                 
                 new_cell = nouveau_cellsegment(tab_seg[j]);
@@ -112,5 +101,26 @@ void intersect_naif(Netlist *n, Segment **tab_seg){
             }
         }  
     }
-    
+    return tab_seg;
+}
+
+void  sauvegarde_intersection(Netlist *n, char *nom_fic){
+    int taille_tab, i;
+    Segment **tab_seg = intersect_naif(n, &taille_tab);
+    char *nom = malloc(100 * sizeof(char));
+    nom = strcpy(nom, nom_fic);
+    strcat(nom, ".int");
+    FILE *f = fopen(nom, "w");
+    for(i=0;i<taille_tab;i++){
+        ecrire_intersec(f, tab_seg[i]);
+    }
+    fclose(f);
+}
+
+void ecrire_intersec(FILE *f, Segment *s){
+    Cell_segment *cs = s->Lintersec;
+    while(cs != NULL){
+        fprintf(f, "%d %d %d %d %d %d\n", s->NumRes, s->p1, s->p2, cs->seg->NumRes, cs->seg->p1, cs->seg->p2);
+        cs = cs->suiv;
+    }
 }

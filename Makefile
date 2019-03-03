@@ -16,4 +16,4 @@ intersection.o: intersection.c
 	gcc -c $(CFLAGS) intersection.c
 	
 clean:
-	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html
+	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html nstance_Netlist/*.int
