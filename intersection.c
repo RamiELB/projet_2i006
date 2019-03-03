@@ -59,12 +59,13 @@ int cpt_segments_netlist(Netlist *n){
     return cpt;
 }
 
-Cell_segment **cs tab_segments_netlist(Netlist *n){
+Cell_segment **tab_segments_netlist(Netlist *n){
     int taille = nb_segment(n);
     Cell_segment *cs_res;
     Cell_segment **cs_netlist=malloc(taille * sizeof(Cell_segment *));
     int indice = 0;
     int i;
+    int nb_seg_res;
     for(i=0;i<n->NbRes;i++){
         nb_seg_res = compte_seg_reseau(n->T_Res[i], &cs_res);
         indice = ajout_liste_tab(cs_res, cs_netlist, indice);
@@ -79,4 +80,27 @@ int ajout_liste_tab(Cell_segment *cs_res, Cell_segment **cs_netlist, int indice)
         indice++;
     }
     return indice;
+}
+
+void intersect_naif(Netlist *n, Segment **tab_seg){
+    int taille_tab = cpt_segments_netlist(n);
+    int i;
+    int j;
+    for(i=0; i<taille_tab; i++){
+        for(j=i; j<taille_tab; j++){
+            if(intersection(n, tab_seg[i], tab_seg[j])){
+                Cell_segment* new_cell = (Cell_segment*)malloc(sizeof(Cell_segment));
+                new_cell->seg = tab_seg[j];
+                if(tab_seg[i]->Lintersec == NULL){
+                    tab_seg[i]->Lintersec = new_cell;
+                } else{
+                    Cell_segment* tete = tab_seg[i]->Lintersec;
+                    new_cell->suiv = tete;
+                    tab_seg[i]->Lintersec = new_cell;
+                    
+                }
+            }
+        }  
+    }
+    
 }
