@@ -1,5 +1,5 @@
 void intersect_naif(Netlist *n, segment **tab_seg){
-    int taille_tab = nb_segment(n);
+    int taille_tab = cpt_segments_netlist(n);
     int i;
     int j;
     for(i=0; i<taille_tab; i++){
