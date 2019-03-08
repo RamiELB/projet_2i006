@@ -1,5 +1,12 @@
 #include "intersection.h"
 
+int main(void){
+    Netlist *n = lecture_netlist("Instance_Netlist/test.net");
+    int taille;
+    intersect_naif(n,&taille);
+    sauvegarde_intersection(n, "Instance_Netlist/test.net");
+}
+
 int intersection(Netlist *n, Segment *seg1, Segment *seg2){
     /* 0 : Les segments ne se coupent pas.
        1 : Les segments sont en intersection. */
@@ -112,7 +119,9 @@ void  sauvegarde_intersection(Netlist *n, char *nom_fic){
     strcat(nom, ".int");
     FILE *f = fopen(nom, "w");
     for(i=0;i<taille_tab;i++){
-        ecrire_intersec(f, tab_seg[i]);
+        if(tab_seg[i]->HouV == 1){
+            ecrire_intersec(f, tab_seg[i]);
+        }
     }
     fclose(f);
 }
