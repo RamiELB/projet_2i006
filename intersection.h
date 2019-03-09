@@ -5,18 +5,29 @@
 #include "netlist.h"
 #include "string.h"
 
+    /* Renvoie 1 si les segments se croisent, 0 sinon */
 int intersection(Netlist *n, Segment *seg1, Segment *seg2);
 
+    /* Renvoie le nombre de segments d'une netlist */
 int nb_segment(Netlist *n);
 
+    /* Renvoie un tableau de tous les segments d'une netlist */
 Segment **tab_segments_netlist(Netlist *n, int *taille);
 
-int ajout_liste_tab(Cell_segment *cs_res, Segment **seg_netlist, int indice);
+    /* Renvoie 1 si le segment S n'est pas dans le tableau tab_seg de la première case à la case indice */
+int seg_pas_dans_tab(Segment **tab_seg, Segment *s, int indice);
 
-Segment **intersect_naif(Netlist *n, int *taille_tab);
+
+
+    
+int ajout_seg_tab(Segment **seg_netlist, Segment *s, int indice);
+
+    /* Remplis Lintersec des segments d'une netlist et renvoie le nombre d'intersections */
+int intersect_naif(Netlist *n);
 
 void sauvegarde_intersection(Netlist *n, char *nom_fic);
 
+    /* Ecris toutes les intersections d'un segment dans le fichier f */
 void ecrire_intersec(FILE *f, Segment *s);
 
 #endif

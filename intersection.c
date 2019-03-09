@@ -2,14 +2,16 @@
 
 int main(void){
     Netlist *n = lecture_netlist("Instance_Netlist/test.net");
-    int taille;
-    intersect_naif(n,&taille);
+    int nb = intersect_naif(n);
     sauvegarde_intersection(n, "Instance_Netlist/test.net");
 }
 
 int intersection(Netlist *n, Segment *seg1, Segment *seg2){
     /* 0 : Les segments ne se coupent pas.
        1 : Les segments sont en intersection. */
+    if(seg1 == seg2){
+        return 0;
+    }
     if(seg1->HouV == seg2->HouV){
         return 0;
     }
@@ -57,42 +59,60 @@ int nb_segment(Netlist *n){
 
 Segment **tab_segments_netlist(Netlist *n, int *taille){
     *taille = nb_segment(n);
-    Cell_segment *cs_res;
+    Cell_segment *cs;
     Segment **seg_netlist=malloc((*taille) * sizeof(Cell_segment *));
     int indice = 0;
-    int i;
+    int i, j;
     for(i=0;i<n->NbRes;i++){
-        compte_seg_reseau(n->T_Res[i], &cs_res);
-        indice = ajout_liste_tab(cs_res, seg_netlist, indice);
+        for(j=0;j<n->T_Res[i]->NbPt;j++){
+            cs = n->T_Res[i]->T_Pt[j]->Lincid;
+            while(cs != NULL){
+                indice = ajout_seg_tab(seg_netlist, cs->seg, indice);
+                cs = cs->suiv;
+            }
+            
+        }
     }
     return seg_netlist;
 }
 
-int ajout_liste_tab(Cell_segment *cs_res, Segment **seg_netlist, int indice){
-    Cell_segment *cs = cs_res;
-    while( cs != NULL){
-        seg_netlist[indice] = cs->seg;
-        cs=cs->suiv;
+int seg_pas_dans_tab(Segment **tab_seg, Segment *s, int indice){
+    int i;
+    for(i=0;i<indice;i++){
+        if(tab_seg[i] == s){
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int ajout_seg_tab(Segment **seg_netlist, Segment *s, int indice){
+    if (seg_pas_dans_tab(seg_netlist, s, indice)){
+        seg_netlist[indice] = s;
         indice++;
     }
     return indice;
 }
 
-Segment **intersect_naif(Netlist *n, int *taille_tab){
-    Segment **tab_seg = tab_segments_netlist(n, taille_tab);
+int intersect_naif(Netlist *n){
+    int taille_tab;
+    Segment **tab_seg = tab_segments_netlist(n, &taille_tab);
     int i;
     int j;
+    int nb_intersec = 0;
     Cell_segment *new_cell;
-    for(i=0; i<(*taille_tab); i++){
-        for(j=i; j<(*taille_tab); j++){
+    Cell_segment *old_cell;
+    for(i=0; i<taille_tab; i++){
+        for(j=i+1; j<taille_tab; j++){
             if(intersection(n, tab_seg[i], tab_seg[j])){
-                
+                nb_intersec++;
+
                 new_cell = nouveau_cellsegment(tab_seg[j]);
                 if(tab_seg[i]->Lintersec == NULL){
                     tab_seg[i]->Lintersec = new_cell;
                 }else{
-                    Cell_segment* tete = tab_seg[i]->Lintersec;
-                    new_cell->suiv = tete;
+                    old_cell = tab_seg[i]->Lintersec;
+                    new_cell->suiv = old_cell;
                     tab_seg[i]->Lintersec = new_cell; 
                 }
 
@@ -101,28 +121,31 @@ Segment **intersect_naif(Netlist *n, int *taille_tab){
                 if(tab_seg[j]->Lintersec == NULL){
                     tab_seg[j]->Lintersec = new_cell;
                 }else{
-                    Cell_segment* tete = tab_seg[j]->Lintersec;
-                    new_cell->suiv = tete;
+                    old_cell = tab_seg[j]->Lintersec;
+                    new_cell->suiv = old_cell;
                     tab_seg[j]->Lintersec = new_cell; 
                 }
             }
         }  
     }
-    return tab_seg;
+    return nb_intersec;
 }
 
-void  sauvegarde_intersection(Netlist *n, char *nom_fic){
-    int taille_tab, i;
-    Segment **tab_seg = intersect_naif(n, &taille_tab);
+void sauvegarde_intersection(Netlist *n, char *nom_fic){
     char *nom = malloc(100 * sizeof(char));
     nom = strcpy(nom, nom_fic);
     strcat(nom, ".int");
     FILE *f = fopen(nom, "w");
-    for(i=0;i<taille_tab;i++){
+
+    int taille;
+    Segment **tab_seg = tab_segments_netlist(n, &taille);
+    int i;
+    for(i=0;i<taille;i++){
         if(tab_seg[i]->HouV == 1){
-            ecrire_intersec(f, tab_seg[i]);
+            ecrire_intersec(f,tab_seg[i]);
         }
     }
+
     fclose(f);
 }
 
