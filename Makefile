@@ -14,6 +14,9 @@ SVGwriter.o: SVGwriter.c
 
 intersection.o: intersection.c
 	gcc -c $(CFLAGS) intersection.c
+
+balayge.o: balayge.c
+	gcc -c $(CFLAGS) balayge.c
 	
 clean:
 	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html Instance_Netlist/*.int

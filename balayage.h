@@ -10,9 +10,30 @@ typedef struct extremite {
     int NumPt; /* si segment H: numero du point correspondant */
 } Extremite;
 
-typdef struct echeancier {
-    Extremite *e;
-    struct echeancier *suiv;
+typedef struct echeancier {
+    Extremite **tab_ex; 
+    int taille_tab;
 } Echeancier;
+
+Echeancier *creer_echeancier(Netlist *n);
+
+int compte_ev(Segment **tab_seg, int taille);
+
+int ajout_extremite(Segment *s, Extremite **tab_ex, int indice, Netlist *n);
+
+Extremite *crea_ext_h(Segment *s, Netlist *n, int GouD, int numpt);
+
+Extremite *crea_ext_v(Segment *s, Netlist *n);
+
+
+
+    /* FONCTIONS SERVANT AU TRI DE LECHEANCIER */
+void tri_rapide(Echeancier *e);
+
+void tri_rapide_rec(Extremite **tab_ex, int d, int f);
+
+int partition(Extremite **tab_ex, int d, int f);
+
+void swap(Extremite **tab_ex, int i, int f);
 
 #endif /* BALAYAGE_H */

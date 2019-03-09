@@ -1,95 +1,113 @@
 #include "balayage.h"
 
-Extreminte **creer_echeancier(Netlist *n){
-    int taille, i;
-    Segment **tab_seg = tab_segments_netlist(Netlist *n, int *taille);
-    Echeancier *prems = NULL;
-    Echeancier *dernier;
-    Echeancier *e;
-    int nb_ec = 0;
+Echeancier *creer_echeancier(Netlist *n){
+    int taille;
+    Segment **tab_seg = tab_segments_netlist(n, &taille);
+
+    int nb_ev = compte_ev(tab_seg, taille);
+    Echeancier *ec= malloc(sizeof(Echeancier));
+    ec->tab_ex = malloc(nb_ev * sizeof(Extremite *));
+    ec->taille_tab = nb_ev;
+    int i;
+    int indice = 0;
     for(i=0;i<taille;i++){
-        if(tab_seg[i]->HouV == 1){
-            nb_ec++:
-            e = creer_echeancier_v(n, tab_seg[i]);
-            if(prems == NULL){
-                prems = e;
-                dernier = e;
-            }else{
-                dernier->suiv = e;
-                dernier = e;
-            }
-        }else{
-            nb_ec +=2;
-            e = creer_echeancier_h(tab_seg[i]);
-            if(prems == NULL){
-                prems = e;
-                dernier = e->suiv;
-            }else{
-                dernier->suiv = e;
-                dernier = e->suiv;
-            }
-        }
-        
+        indice = ajout_extremite(tab_seg[i], ec->tab_ex, indice, n);
     }
-    return prems;
+    return ec;
 }
 
-Echeancier *creer_echeancier_v(Netlist *n, Segment *s){
+int compte_ev(Segment **tab_seg, int taille){
+    int cpt = 0;
+    int i;
+    for(i=0;i<taille;i++){
+        if(tab_seg[i]->HouV == 1){
+            cpt ++;
+        }else{
+            cpt+=2;
+        }
+    }
+    return cpt;
+}
+
+int ajout_extremite(Segment *s, Extremite **tab_ex, int indice, Netlist *n){
+    Extremite *e;
+    if(s->HouV == 0){
+        if(n->T_Res[s->NumRes]->T_Pt[s->p1]->x < n->T_Res[s->NumRes]->T_Pt[s->p2]->x){
+            e = crea_ext_h(s, n, 1, s->p1);
+            tab_ex[indice] = e;
+            indice++;
+
+            e = crea_ext_h(s, n, 2, s->p2);
+            tab_ex[indice] = e;
+            indice++;
+        }else{
+            e = crea_ext_h(s, n, 2, s->p1);
+            tab_ex[indice] = e;
+            indice++;
+
+            e = crea_ext_h(s, n, 1, s->p2);
+            tab_ex[indice] = e;
+            indice++;
+        }
+    }else{
+        e = crea_ext_v(s, n);
+        tab_ex[indice] = e;
+        indice++;
+    }
+    return indice;
+}
+
+Extremite *crea_ext_h(Segment *s, Netlist *n, int GouD, int numpt){
     Extremite *e = malloc(sizeof(Extremite));
-    e->x = n[s->NumRes]->T_Pt[s->p1];
-    e->VouGouD = 0;
-    Echeancier *ec = malloc(sizeof(Echeancier));
-    ec->e = e;
-    ec->suiv = NULL;
+    e->VouGouD = GouD;
+    e->PtrSeg = s;
+    e->NumPt = numpt;
+    e->x = n->T_Res[s->NumRes]->T_Pt[numpt]->x;
     return e;
 }
 
-Echeancier *creer_echeancier_h(Netlist *n, Segment *s){
-    Extremite *e1 = malloc(sizeof(Extremite));
-    Extremite *e2 = malloc(sizeof(Extremite));
-    e1->x = n[s->NumRes]->T_Pt[s->p1];
-    e2->x = n[s->NumRes]->T_Pt[s->p2];
-    e1->NumpPt = s->p1;
-    e2->NumpPt = s->p2;
-    if(e1->x < e2->x){
-        e1->VouGouD = 1;
-        e2->VouGouD = 2;
-    }else{
-        e1->VouGouD = 2;
-        e2->VouGouD = 1;
-    }
-    Echeancier *ec1 = malloc(sizeof(Echeancier));
-    Echeancier *ec2 = malloc(sizeof(Echeancier));
-    ec1->e = e1;
-    ec1->suiv = ec2;
-    ec2->e = e2;
-    ec2->suiv = NULL;
-    return ec1;
+
+Extremite *crea_ext_v(Segment *s, Netlist *n){
+    Extremite *e = malloc(sizeof(Extremite));
+    e->VouGouD = 0;
+    e->PtrSeg = s;
+    e->NumPt = -1;
+    e->x = n->T_Res[s->NumRes]->T_Pt[s->p1]->x;
+    return e;
 }
 
-void trirapide(Echeancier *e, int nb_ec){
-    trirapide_rec(e, e, nb_ec-1);
+void tri_rapide(Echeancier *e){
+    tri_rapide_rec(e->tab_ex, 0, e->taille_tab - 1);
 }
 
-void trirapide_rec(Echeancier *e, Echeancier *d, int f){
-    if(d<fin){
-        Echeancier *m = partition(e, d, f);
-        trirapide_rec(t,d,m);
-        trirapide_rec(t,d,m)
+void tri_rapide_rec(Extremite **tab_ex, int d, int f){
+    if(d<f){
+        int m = partition(tab_ex, d, f);
+        tri_rapide_rec(tab_ex, d, m);
+        tri_rapide_rec(tab_ex, m+1, f);
     }
 }
 
-Echeancier *partition(Echeancier *e, Echeancier *d, int f){
-    Echeancier *separateur = d->suiv;
-    Echeancier *actuel = separateur->suiv;
-    Echeancier *prec_sep = d;
-    Echeancier *prec_act = separateur;
-    Echeancier *temp;
+int partition(Extremite **tab_ex, int d, int f){
     int i;
-    for(i=0;i<f;i++){
-        if (actuel->e->x < d->e->x){
-            prec_sep->suiv = actuel->e;
-            temp=actuel->
+    int m = d+1;
+    while(tab_ex[m]->x <= tab_ex[d]->x && m<f){
+        m++;
+    }
+    for(i=m+1;i<=f;i++){
+        if(tab_ex[i]->x <= tab_ex[d]->x){
+            swap(tab_ex, i, m);
+            m++;
         }
     }
+    if(tab_ex[d]->x > tab_ex[m]->x){
+        swap(tab_ex, d, m);
+    }
+    return m-1;
+}
+
+void swap(Extremite **tab_ex, int i, int f){
+    Extremite *tmp = tab_ex[f];
+    tab_ex[f] = tab_ex[i];
+    tab_ex[i] = tmp;
 }

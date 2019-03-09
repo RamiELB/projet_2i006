@@ -1,11 +1,5 @@
 #include "intersection.h"
 
-int main(void){
-    Netlist *n = lecture_netlist("Instance_Netlist/test.net");
-    int nb = intersect_naif(n);
-    sauvegarde_intersection(n, "Instance_Netlist/test.net");
-}
-
 int intersection(Netlist *n, Segment *seg1, Segment *seg2){
     /* 0 : Les segments ne se coupent pas.
        1 : Les segments sont en intersection. */

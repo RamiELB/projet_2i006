@@ -25,6 +25,7 @@ int ajout_seg_tab(Segment **seg_netlist, Segment *s, int indice);
     /* Remplis Lintersec des segments d'une netlist et renvoie le nombre d'intersections */
 int intersect_naif(Netlist *n);
 
+    /* Ecris les intersections d'une netlist dans un fichier .int */
 void sauvegarde_intersection(Netlist *n, char *nom_fic);
 
     /* Ecris toutes les intersections d'un segment dans le fichier f */
