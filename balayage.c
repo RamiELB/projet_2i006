@@ -1,5 +1,13 @@
 #include "balayage.h"
 
+int main(){
+    Netlist *n = lecture_netlist("Instance_Netlist/test.net");
+    intersec_balayage(n);
+    sauvegarde_intersection(n, "Instance_Netlist/test.net");
+}
+
+
+        /* ECHEANCIER */
 Echeancier *creer_echeancier(Netlist *n){
     int taille;
     Segment **tab_seg = tab_segments_netlist(n, &taille);
@@ -13,6 +21,7 @@ Echeancier *creer_echeancier(Netlist *n){
     for(i=0;i<taille;i++){
         indice = ajout_extremite(tab_seg[i], ec->tab_ex, indice, n);
     }
+    tri_rapide(ec);
     return ec;
 }
 
@@ -75,7 +84,7 @@ Extremite *crea_ext_v(Segment *s, Netlist *n){
     e->x = n->T_Res[s->NumRes]->T_Pt[s->p1]->x;
     return e;
 }
-
+    /* TRI DE L'ECHEANCIER */
 void tri_rapide(Echeancier *e){
     tri_rapide_rec(e->tab_ex, 0, e->taille_tab - 1);
 }
@@ -110,4 +119,120 @@ void swap(Extremite **tab_ex, int i, int f){
     Extremite *tmp = tab_ex[f];
     tab_ex[f] = tab_ex[i];
     tab_ex[i] = tmp;
+}
+
+
+
+    
+
+    /* SECONDE STRUCTURE */
+void Inserer(Segment *s, Cell_t **T, Netlist *n){
+    Cell_t *nv_c = malloc(sizeof(Cell_t));
+    nv_c->y = n->T_Res[s->NumRes]->T_Pt[s->p1]->y;
+    nv_c->seg = s;
+    if(*T == NULL){
+        nv_c->prec = NULL;
+        nv_c->suiv = NULL;
+        *T = nv_c;
+    }else{
+        Cell_t *ct = *T;
+        Cell_t *c_prec;
+        while(ct != NULL && ct->y < nv_c->y){
+            c_prec = ct;
+            ct = ct->suiv;
+        }
+        if(ct == *T){
+            nv_c->suiv = *T;
+            nv_c->prec = NULL;
+            (*T)->prec = nv_c;
+            *T = nv_c;
+        }else if(ct == NULL){
+            c_prec->suiv = nv_c;
+            nv_c->prec = c_prec;
+            nv_c->suiv = NULL;
+        }else{
+            nv_c->suiv = ct;
+            ct->prec = nv_c;
+            c_prec->suiv = nv_c;
+        }
+    }
+}
+
+void Supprimer(Segment *s, Cell_t **T){
+    Cell_t *ct = *T;
+    while(ct->seg != s && ct != NULL){
+        ct = ct->suiv;
+    }
+    if(ct == NULL){
+        printf("Erreur : le segment à supprimer n'est pas dans la liste\n");
+    }else{
+        if(ct == *T){
+            *T = ct->suiv;
+            if(*T != NULL){
+                (*T)->prec = NULL;
+            }
+        }else{
+            ct->prec->suiv = ct->suiv;
+            if(ct->suiv != NULL){
+                ct->suiv->prec = ct->prec;
+            }
+        }
+        free(ct);
+    }
+}
+
+Cell_t *Prem_segment_apres(double y, Cell_t *T){
+    Cell_t *ct = T;
+    while(ct != NULL){
+        if(ct->y > y){
+            return ct;
+        }
+        ct = ct->suiv;
+    }
+    return NULL;
+}
+
+Cell_t *AuDessus(Cell_t *h){
+    return h->suiv;
+}
+
+void ajout_intersection(Segment *s1, Segment *s2){
+    Cell_segment *ct;
+    ct = nouveau_cellsegment(s2);
+    ct->suiv = s1->Lintersec;
+    s1->Lintersec = ct;
+
+    ct = nouveau_cellsegment(s1);
+    ct->suiv = s2->Lintersec;
+    s2->Lintersec = ct;
+}
+
+void intersec_balayage(Netlist *n){
+    Echeancier *e = creer_echeancier(n);
+    int i;
+    Cell_t *T;
+    double y1, y2;
+    Segment *seg;
+    Cell_t *h;
+    for(i=0;i<e->taille_tab;i++){
+        seg = e->tab_ex[i]->PtrSeg;
+        if(e->tab_ex[i]->VouGouD == 1){
+            Inserer(seg, &T, n);
+        }else if(e->tab_ex[i]->VouGouD == 2){
+            Supprimer(seg, &T);
+        }else{
+            if(n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y < n->T_Res[seg->NumRes]->T_Pt[seg->p2]->y){
+                y1 = n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y; 
+                y2 = n->T_Res[seg->NumRes]->T_Pt[seg->p2]->y;
+            }else{
+                y2 = n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y; 
+                y1 = n->T_Res[seg->NumRes]->T_Pt[seg->p2]->y;
+            }
+            h = Prem_segment_apres(y1, T);
+            while(h != NULL && h->y < y2){
+                ajout_intersection(h->seg, seg);
+                h = AuDessus(h);
+            }
+        }
+    }
 }

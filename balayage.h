@@ -15,6 +15,13 @@ typedef struct echeancier {
     int taille_tab;
 } Echeancier;
 
+typedef struct cell_t{
+    double y; 
+    Segment *seg;
+    struct cell_t *suiv;
+    struct cell_t *prec;
+} Cell_t;
+
 Echeancier *creer_echeancier(Netlist *n);
 
 int compte_ev(Segment **tab_seg, int taille);
@@ -35,5 +42,21 @@ void tri_rapide_rec(Extremite **tab_ex, int d, int f);
 int partition(Extremite **tab_ex, int d, int f);
 
 void swap(Extremite **tab_ex, int i, int f);
+
+
+    /* MANIPULATION DE LA SECONDE STRUCTURE */
+void Inserer(Segment *s, Cell_t **T, Netlist *n);
+
+void Supprimer(Segment *s, Cell_t **T);
+
+Cell_t *Prem_segment_apres(double y, Cell_t *T);
+
+Cell_t *AuDessus(Cell_t *h);
+
+void ajout_intersection(Segment *s1, Segment *s2);
+
+void intersec_balayage(Netlist *n);
+
+
 
 #endif /* BALAYAGE_H */
