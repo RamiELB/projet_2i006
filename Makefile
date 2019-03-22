@@ -17,6 +17,9 @@ intersection.o: intersection.c
 
 balayage.o: balayage.c
 	gcc -c $(CFLAGS) balayage.c
+
+avl.o: avl.c
+	gcc -c $(CFLAGS) avl.c
 	
 clean:
 	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html Instance_Netlist/*.int

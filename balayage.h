@@ -16,10 +16,9 @@ typedef struct echeancier {
 } Echeancier;
 
 typedef struct cell_t{
-    double y; 
+    double y;
     Segment *seg;
     struct cell_t *suiv;
-    struct cell_t *prec;
 } Cell_t;
 
 Echeancier *creer_echeancier(Netlist *n);
