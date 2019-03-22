@@ -7,7 +7,7 @@
 
 typedef struct noeud {
     Segment * seg;
-    int y; /* Ordonnee du segment */
+    double y; /* Ordonnee du segment */
     struct noeud * fg; /* Fils gauche */
     struct noeud * fd; /* Fils droit */
     int hauteur;
