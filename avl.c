@@ -1,16 +1,19 @@
 #include "avl.h"
 
-Noeud *rechercherValeur(ABR ab, Segment *seg, Netlist *n){
+Noeud *Prem_Noeud_apres(ABR ab, double y){
 	if(ab == NULL) return NULL;
     
-	if(ab->seg == seg) return ab;
-
-    double y = n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y;
-
-	if(ab->y < y) 
-		return rechercherValeur(ab->fd, seg, n);
-	else
-		return rechercherValeur(ab->fg, seg, n);
+    if(ab->y > y){
+        ABR *inf = Prem_Noeud_apres(ab->gauche, y);
+        if (inf != NULL){
+            return inf;
+        }
+        /* S'il n'éxiste pas de noeud inférieur au noeud actuel et suppérier à y, alors
+            on a le bon */
+        return ab;
+    }else{
+        return Prem_Noeud_apres(ab->fd, y);
+    }
 }
 
 Noeud *creerFeuille(Segment *seg, Netlist *n){
@@ -88,7 +91,7 @@ void insererElnt_avec_eq(ABR *ab, Segment *seg, Netlist *n){
     }
 }
 
-/*
+
 void intersec_avl(Netlist *n){
     Echeancier *e = creer_echeancier(n);
     int i;
@@ -110,12 +113,11 @@ void intersec_avl(Netlist *n){
                 y2 = n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y; 
                 y1 = n->T_Res[seg->NumRes]->T_Pt[seg->p2]->y;
             }
-            h = Prem_segment_apres(y1, T);
+            h = Prem_Noeud_apres(ab, y1);
             while(h != NULL && h->y < y2){
                 ajout_intersection(h->seg, seg);
-                h = AuDessus(h);
+                h = Prem_Noeud_apres(h);
             }
         }
     }
 }
-*/
