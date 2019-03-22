@@ -52,8 +52,6 @@ Cell_t *Prem_segment_apres(double y, Cell_t *T);
 
 Cell_t *AuDessus(Cell_t *h);
 
-void ajout_intersection(Segment *s1, Segment *s2);
-
 void intersec_balayage(Netlist *n);
 
 

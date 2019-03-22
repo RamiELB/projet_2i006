@@ -177,17 +177,6 @@ Cell_t *AuDessus(Cell_t *h){
     return h->suiv;
 }
 
-void ajout_intersection(Segment *s1, Segment *s2){
-    Cell_segment *ct;
-    ct = nouveau_cellsegment(s2);
-    ct->suiv = s1->Lintersec;
-    s1->Lintersec = ct;
-
-    ct = nouveau_cellsegment(s1);
-    ct->suiv = s2->Lintersec;
-    s2->Lintersec = ct;
-}
-
 void intersec_balayage(Netlist *n){
     Echeancier *e = creer_echeancier(n);
     int i;

@@ -100,4 +100,6 @@ void ecrire_points(FILE *f, Reseau *r);
 void ecrire_segments(FILE *f, Cell_segment *cs);
 void free_chaine_cs(Cell_segment **cs);
 
+void ajout_intersection(Segment *s1, Segment *s2);
+
 #endif /* NETLIST_H */

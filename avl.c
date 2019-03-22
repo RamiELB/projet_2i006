@@ -87,3 +87,35 @@ void insererElnt_avec_eq(ABR *ab, Segment *seg, Netlist *n){
 	    }
     }
 }
+
+/*
+void intersec_avl(Netlist *n){
+    Echeancier *e = creer_echeancier(n);
+    int i;
+    ABR *ab = NULL;
+    double y1, y2;
+    Segment *seg;
+    ABR *h
+    for(i=0;i<e->taille_tab;i++){
+        seg = e->tab_ex[i]->PtrSeg;
+        if(e->tab_ex[i]->VouGouD == 1){
+            insererElnt_avec_eq(ab, seg, n);
+        }else if(e->tab_ex[i]->VouGouD == 2){
+            SUPPRIMERAVECELELQ
+        }else{
+            if(n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y < n->T_Res[seg->NumRes]->T_Pt[seg->p2]->y){
+                y1 = n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y; 
+                y2 = n->T_Res[seg->NumRes]->T_Pt[seg->p2]->y;
+            }else{
+                y2 = n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y; 
+                y1 = n->T_Res[seg->NumRes]->T_Pt[seg->p2]->y;
+            }
+            h = Prem_segment_apres(y1, T);
+            while(h != NULL && h->y < y2){
+                ajout_intersection(h->seg, seg);
+                h = AuDessus(h);
+            }
+        }
+    }
+}
+*/

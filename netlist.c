@@ -231,3 +231,14 @@ void free_chaine_cs(Cell_segment **cs){
         prec = *cs;
     }
 }
+
+void ajout_intersection(Segment *s1, Segment *s2){
+    Cell_segment *ct;
+    ct = nouveau_cellsegment(s2);
+    ct->suiv = s1->Lintersec;
+    s1->Lintersec = ct;
+
+    ct = nouveau_cellsegment(s1);
+    ct->suiv = s2->Lintersec;
+    s2->Lintersec = ct;
+}
