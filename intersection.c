@@ -128,7 +128,7 @@ int intersect_naif(Netlist *n){
 void sauvegarde_intersection(Netlist *n, char *nom_fic){
     char *nom = malloc(100 * sizeof(char));
     nom = strcpy(nom, nom_fic);
-    strcat(nom, ".int");
+    nom = strcat(nom, ".int");
     FILE *f = fopen(nom, "w");
 
     int taille;

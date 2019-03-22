@@ -1,12 +1,5 @@
 #include "balayage.h"
 
-int main(){
-    Netlist *n = lecture_netlist("Instance_Netlist/test.net");
-    intersec_balayage(n);
-    sauvegarde_intersection(n, "Instance_Netlist/test.net");
-}
-
-
         /* ECHEANCIER */
 Echeancier *creer_echeancier(Netlist *n){
     int taille;
@@ -131,36 +124,30 @@ void Inserer(Segment *s, Cell_t **T, Netlist *n){
     nv_c->y = n->T_Res[s->NumRes]->T_Pt[s->p1]->y;
     nv_c->seg = s;
     if(*T == NULL){
-        nv_c->prec = NULL;
         nv_c->suiv = NULL;
         *T = nv_c;
     }else{
         Cell_t *ct = *T;
         Cell_t *c_prec;
-        while(ct != NULL && ct->y < nv_c->y){
+        while( (ct != NULL) && (ct->y < nv_c->y) ){
             c_prec = ct;
             ct = ct->suiv;
         }
         if(ct == *T){
             nv_c->suiv = *T;
-            nv_c->prec = NULL;
-            (*T)->prec = nv_c;
             *T = nv_c;
-        }else if(ct == NULL){
-            c_prec->suiv = nv_c;
-            nv_c->prec = c_prec;
-            nv_c->suiv = NULL;
         }else{
-            nv_c->suiv = ct;
-            ct->prec = nv_c;
             c_prec->suiv = nv_c;
+            nv_c->suiv = ct;
         }
     }
 }
 
 void Supprimer(Segment *s, Cell_t **T){
     Cell_t *ct = *T;
+    Cell_t *c_prec;
     while(ct->seg != s && ct != NULL){
+        c_prec = ct;
         ct = ct->suiv;
     }
     if(ct == NULL){
@@ -168,14 +155,8 @@ void Supprimer(Segment *s, Cell_t **T){
     }else{
         if(ct == *T){
             *T = ct->suiv;
-            if(*T != NULL){
-                (*T)->prec = NULL;
-            }
         }else{
-            ct->prec->suiv = ct->suiv;
-            if(ct->suiv != NULL){
-                ct->suiv->prec = ct->prec;
-            }
+            c_prec->suiv = ct->suiv;
         }
         free(ct);
     }
@@ -210,7 +191,7 @@ void ajout_intersection(Segment *s1, Segment *s2){
 void intersec_balayage(Netlist *n){
     Echeancier *e = creer_echeancier(n);
     int i;
-    Cell_t *T;
+    Cell_t *T = NULL;
     double y1, y2;
     Segment *seg;
     Cell_t *h;
