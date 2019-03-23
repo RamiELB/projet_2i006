@@ -1,12 +1,19 @@
 #include "visunetlist.h"
 
 int main(int argc, char** argv) {
-    
+    if(argc != 4){
+        fprintf(stderr, "Il faut en argument le nom du fichier de la netlist à créer, suivi des dimensions voulus\n");
+        return 0;
+    }
     char* fname = argv[1];
     int sizeX = (int) strtol(argv[2], (char **)NULL, 10);
     int sizeY = (int) strtol(argv[3], (char **)NULL, 10);
     
     Netlist *n = lecture_netlist(fname);
+    if(n == NULL){
+        fprintf(stderr, "Echec de la création de la netlist\n");
+        return 0;
+    }
     SVGwriter svg;
     SVGinit(&svg, fname, sizeX, sizeY);
     SVGpointColor(&svg, Black);

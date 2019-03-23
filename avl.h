@@ -19,7 +19,7 @@ typedef Noeud* ABR;
 
 Noeud *Prem_Noeud_apres(ABR ab, double y);
 
-ABR chercher_noeud(ABR ab, Segment *seg, Netlist *n);
+ABR *chercher_noeud(ABR *ab, Segment *seg, Netlist *n);
 
 ABR coupe_max(ABR *ab); /* Renvoie l'ABR correspondant au max de ab et le fixe à NULL dans ab */
 

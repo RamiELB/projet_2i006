@@ -1,9 +1,10 @@
 #include "avl.h"
 
 int main(){
-    Netlist *n = lecture_netlist("Instance_Netlist/test.net");
+    char *nom ="Instance_Netlist/alea0100_050_10_097.net";
+    Netlist *n = lecture_netlist(nom);
     intersec_avl(n);
-    sauvegarde_intersection(n,"Instance_Netlist/test.net");
+    sauvegarde_intersection(n,nom);
 }
 
 Noeud *Prem_Noeud_apres(ABR ab, double y){
@@ -14,7 +15,7 @@ Noeud *Prem_Noeud_apres(ABR ab, double y){
         if (inf != NULL){
             return inf;
         }
-        /* S'il n'éxiste pas de noeud inférieur au noeud actuel et suppérier à y, alors
+        /* S'il n'existe pas de noeud inférieur au noeud actuel et suppérier à y, alors
             on a le bon */
         return ab;
     }else{
@@ -49,7 +50,7 @@ void rotationDroite(ABR *ab){
 	r->fg = g->fd;
 	g->fd = r;
 	*ab = g;
-	majhauteur((*ab)->fg);
+	majhauteur((*ab)->fd);
     majhauteur(*ab);
 }
 
@@ -60,7 +61,7 @@ void rotationGauche(ABR *ab){
 	r->fd = d->fg;
 	d->fg = r;
 	*ab = d;
-	majhauteur((*ab)->fd);
+	majhauteur((*ab)->fg);
     majhauteur(*ab);
 }
 
@@ -87,15 +88,12 @@ void insererElnt_avec_eq(ABR *ab, Segment *seg, Netlist *n){
                 rotationGauche( &((*ab)->fg));
             }
             rotationDroite(ab);
-            majhauteur((*ab)->fd);
         }else if ( hg - hd == -2 ){
             if( hauteur( (*ab)->fd->fd ) < hauteur( (*ab)->fd->fg ) ){
-                rotationDroite( &((*ab)->fg));
+                rotationDroite( &((*ab)->fd));
             }
             rotationGauche(ab);
-            majhauteur((*ab)->fg);
 	    }
-        majhauteur(*ab);
     }
 }
 
@@ -109,9 +107,10 @@ ABR coupe_max(ABR *ab){
 }
 
 void supprimer_avc_eq(ABR *ab, Segment *seg, Netlist *n){
-    ABR temp = chercher_noeud(*ab, seg, n);
-    ABR *a = &temp;
-    if(*a == NULL){
+    ABR *a = chercher_noeud(ab, seg, n);
+    ABR temp = *a;
+    if(temp == NULL){
+        fprintf(stderr, "Erreur : le noeud à supprimer n'existe pas\n");
     }else{
         if((*a)->fg == NULL){
             *a = (*a)->fd;
@@ -128,15 +127,15 @@ void supprimer_avc_eq(ABR *ab, Segment *seg, Netlist *n){
     hauteur_abr(*ab);
 }
 
-ABR chercher_noeud(ABR ab, Segment *seg, Netlist *n){
-    if(ab == NULL || ab->seg == seg){
+ABR *chercher_noeud(ABR *ab, Segment *seg, Netlist *n){
+    if(*ab == NULL || (*ab)->seg == seg){
         return ab;
     }
     double y = n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y;
-    if(y < ab->y){
-        return chercher_noeud(ab->fg, seg, n);
+    if(y < (*ab)->y){
+        return chercher_noeud(&((*ab)->fg), seg, n);
     }
-    return chercher_noeud(ab->fd, seg, n);
+    return chercher_noeud(&((*ab)->fd), seg, n);
 }
 
 void hauteur_abr(ABR a){

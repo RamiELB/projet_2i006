@@ -115,7 +115,7 @@ void sauvegarde_intersection(Netlist *n, char *nom_fic){
     Segment **tab_seg = tab_segments_netlist(n, &taille);
     int i;
     for(i=0;i<taille;i++){
-        if(tab_seg[i]->HouV == 1){
+        if(tab_seg[i]->HouV == 0){
             ecrire_intersec(f,tab_seg[i]);
         }
     }
