@@ -94,31 +94,11 @@ int intersect_naif(Netlist *n){
     int i;
     int j;
     int nb_intersec = 0;
-    Cell_segment *new_cell;
-    Cell_segment *old_cell;
     for(i=0; i<taille_tab; i++){
         for(j=i+1; j<taille_tab; j++){
             if(intersection(n, tab_seg[i], tab_seg[j])){
                 nb_intersec++;
-
-                new_cell = nouveau_cellsegment(tab_seg[j]);
-                if(tab_seg[i]->Lintersec == NULL){
-                    tab_seg[i]->Lintersec = new_cell;
-                }else{
-                    old_cell = tab_seg[i]->Lintersec;
-                    new_cell->suiv = old_cell;
-                    tab_seg[i]->Lintersec = new_cell; 
-                }
-
-                /* Il faut aussi l'ajouter dans la liste du 2nd segment */
-                new_cell = nouveau_cellsegment(tab_seg[i]);
-                if(tab_seg[j]->Lintersec == NULL){
-                    tab_seg[j]->Lintersec = new_cell;
-                }else{
-                    old_cell = tab_seg[j]->Lintersec;
-                    new_cell->suiv = old_cell;
-                    tab_seg[j]->Lintersec = new_cell; 
-                }
+                ajout_intersection(tab_seg[i], tab_seg[j]);
             }
         }  
     }

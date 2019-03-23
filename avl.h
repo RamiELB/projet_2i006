@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "netlist.h"
+#include "balayage.h"
 
 
 typedef struct noeud {
@@ -16,9 +17,11 @@ typedef struct noeud {
 typedef Noeud* ABR;
 
 
+Noeud *Prem_Noeud_apres(ABR ab, double y);
 
+ABR chercher_noeud(ABR ab, Segment *seg, Netlist *n);
 
-Noeud *rechercherValeur(ABR ab, Segment *seg, Netlist *n);
+ABR coupe_max(ABR *ab); /* Renvoie l'ABR correspondant au max de ab et le fixe à NULL dans ab */
 
 Noeud *creerFeuille(Segment *seg, Netlist *n);
 
@@ -33,5 +36,9 @@ void rotationGauche(ABR *ab);
 void majhauteur(ABR ab);
 
 void insererElnt_avec_eq(ABR *ab, Segment *seg, Netlist *n);
+
+void intersec_avl(Netlist *n);
+
+void hauteur_abr(ABR a);
 
 #endif /* NETLIST_H */

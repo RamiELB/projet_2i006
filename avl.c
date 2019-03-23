@@ -1,10 +1,16 @@
 #include "avl.h"
 
+int main(){
+    Netlist *n = lecture_netlist("Instance_Netlist/test.net");
+    intersec_avl(n);
+    sauvegarde_intersection(n,"Instance_Netlist/test.net");
+}
+
 Noeud *Prem_Noeud_apres(ABR ab, double y){
 	if(ab == NULL) return NULL;
     
     if(ab->y > y){
-        ABR *inf = Prem_Noeud_apres(ab->gauche, y);
+        ABR inf = Prem_Noeud_apres(ab->fg, y);
         if (inf != NULL){
             return inf;
         }
@@ -17,7 +23,7 @@ Noeud *Prem_Noeud_apres(ABR ab, double y){
 }
 
 Noeud *creerFeuille(Segment *seg, Netlist *n){
-	Noeud *f = malloc(sizeof(Noeud));
+	Noeud *f = (Noeud *) malloc(sizeof(Noeud));
     f->y = n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y;
 	f->seg = seg;
 	f->fg = NULL;
@@ -43,8 +49,10 @@ void rotationDroite(ABR *ab){
 	r->fg = g->fd;
 	g->fd = r;
 	*ab = g;
-	majhauteur(*ab);
+	majhauteur((*ab)->fg);
+    majhauteur(*ab);
 }
+
 void rotationGauche(ABR *ab){
 	ABR r = (*ab);
 	ABR d = r->fd;
@@ -52,15 +60,12 @@ void rotationGauche(ABR *ab){
 	r->fd = d->fg;
 	d->fg = r;
 	*ab = d;
-	majhauteur(*ab);
+	majhauteur((*ab)->fd);
+    majhauteur(*ab);
 }
 
 void majhauteur(ABR ab){
-    if(ab != NULL){
-        majhauteur(ab->fg);
-        majhauteur(ab->fd);
-        ab->hauteur= 1 + max(hauteur(ab->fg), hauteur(ab->fd));
-    }
+    ab->hauteur = 1 + max(hauteur(ab->fg), hauteur(ab->fd));
 }
 
 
@@ -69,10 +74,10 @@ void insererElnt_avec_eq(ABR *ab, Segment *seg, Netlist *n){
 		*ab = creerFeuille(seg, n);
 	}else{
         double y = n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y;
-		if( (*ab)->y >= y){
-			insererElnt_avec_eq(&((*ab)->fd), seg, n);
-		}else{
+		if( y <= (*ab)->y ){
 			insererElnt_avec_eq(&((*ab)->fg), seg, n);
+		}else{
+			insererElnt_avec_eq(&((*ab)->fd), seg, n);
 		}
         int hg = hauteur((*ab)->fg);
         int hd = hauteur((*ab)->fd);
@@ -82,29 +87,79 @@ void insererElnt_avec_eq(ABR *ab, Segment *seg, Netlist *n){
                 rotationGauche( &((*ab)->fg));
             }
             rotationDroite(ab);
+            majhauteur((*ab)->fd);
         }else if ( hg - hd == -2 ){
-            if( hauteur( (*ab)->fd->fd ) < hauteur( (*ab)->fd->fd ) ){
-                rotationGauche( &((*ab)->fg));
+            if( hauteur( (*ab)->fd->fd ) < hauteur( (*ab)->fd->fg ) ){
+                rotationDroite( &((*ab)->fg));
             }
             rotationGauche(ab);
+            majhauteur((*ab)->fg);
 	    }
+        majhauteur(*ab);
     }
 }
 
+ABR coupe_max(ABR *ab){
+    if((*ab)->fd == NULL){
+        ABR res = (*ab);
+        (*ab) = res->fg;
+        return res;
+    }
+    return coupe_max(&((*ab)->fd));
+}
+
+void supprimer_avc_eq(ABR *ab, Segment *seg, Netlist *n){
+    ABR temp = chercher_noeud(*ab, seg, n);
+    ABR *a = &temp;
+    if(*a == NULL){
+    }else{
+        if((*a)->fg == NULL){
+            *a = (*a)->fd;
+        }else if((*a)->fd == NULL){
+            *a = (*a)->fg;     
+        }else{
+            ABR r = coupe_max(&((*ab)->fg));
+            r->fg = (*a)->fg;
+            r->fd = (*a)->fd;
+            *a = r;
+        }
+        free(temp); 
+    }
+    hauteur_abr(*ab);
+}
+
+ABR chercher_noeud(ABR ab, Segment *seg, Netlist *n){
+    if(ab == NULL || ab->seg == seg){
+        return ab;
+    }
+    double y = n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y;
+    if(y < ab->y){
+        return chercher_noeud(ab->fg, seg, n);
+    }
+    return chercher_noeud(ab->fd, seg, n);
+}
+
+void hauteur_abr(ABR a){
+    if(a != NULL){
+        hauteur_abr(a->fg);
+        hauteur_abr(a->fd);
+        a->hauteur = 1 + max(hauteur(a->fg), hauteur(a->fd));
+    }
+}
 
 void intersec_avl(Netlist *n){
     Echeancier *e = creer_echeancier(n);
     int i;
-    ABR *ab = NULL;
+    ABR ab = NULL;
     double y1, y2;
     Segment *seg;
-    ABR *h
+    ABR h;
     for(i=0;i<e->taille_tab;i++){
         seg = e->tab_ex[i]->PtrSeg;
         if(e->tab_ex[i]->VouGouD == 1){
-            insererElnt_avec_eq(ab, seg, n);
+            insererElnt_avec_eq(&ab, seg, n);
         }else if(e->tab_ex[i]->VouGouD == 2){
-            SUPPRIMERAVECELELQ
+            supprimer_avc_eq(&ab, seg, n);
         }else{
             if(n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y < n->T_Res[seg->NumRes]->T_Pt[seg->p2]->y){
                 y1 = n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y; 
@@ -116,7 +171,7 @@ void intersec_avl(Netlist *n){
             h = Prem_Noeud_apres(ab, y1);
             while(h != NULL && h->y < y2){
                 ajout_intersection(h->seg, seg);
-                h = Prem_Noeud_apres(h);
+                h = Prem_Noeud_apres(h, h->y);
             }
         }
     }
