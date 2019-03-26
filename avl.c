@@ -1,11 +1,5 @@
 #include "avl.h"
 
-int main(){
-    char *nom ="Instance_Netlist/alea0500_500_90_033.net";
-    Netlist *n = lecture_netlist(nom);
-    intersec_balayage(n);
-    sauvegarde_intersection(n,nom);
-}
 
 Noeud *Prem_Noeud_apres(ABR ab, double y){
 	if(ab == NULL) return NULL;

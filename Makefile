@@ -21,8 +21,9 @@ balayage.o: balayage.c
 avl.o: avl.c
 	gcc -c $(CFLAGS) avl.c
 
-test: netlist.o intersection.o balayage.o avl.o 
-	gcc -o test $(CFLAGS) netlist.o intersection.o balayage.o avl.o
+perf_intersec: netlist.o intersection.o balayage.o avl.o perf_intersec.c
+	gcc -c $(CFLAGS) perf_intersec.c
+	gcc -o perf_intersec $(CFLAGS) netlist.o intersection.o balayage.o avl.o perf_intersec.o
 	
 clean:
-	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html Instance_Netlist/*.int test
+	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html Instance_Netlist/*.int perf_intersec

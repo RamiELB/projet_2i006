@@ -102,4 +102,8 @@ void free_chaine_cs(Cell_segment **cs);
 
 void ajout_intersection(Segment *s1, Segment *s2);
 
+void free_netlist(Netlist *n);
+
+void free_reseau(Reseau *r);
+
 #endif /* NETLIST_H */

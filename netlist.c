@@ -3,7 +3,7 @@
 Netlist *lecture_netlist(char* nom_fichier){
     FILE *f = fopen(nom_fichier, "r");
     if(f == NULL){
-        printf("Erreur ouverture fichier\n");
+        fprintf(stderr, "Erreur ouverture fichier\n");
         return NULL;
     }
     Netlist *n = malloc(sizeof(Netlist));
@@ -241,4 +241,21 @@ void ajout_intersection(Segment *s1, Segment *s2){
     ct = nouveau_cellsegment(s1);
     ct->suiv = s2->Lintersec;
     s2->Lintersec = ct;
+}
+
+void free_netlist(Netlist *n){
+    int i;
+    for(i=0;i<n->NbRes;i++){
+        free_reseau(n->T_Res[i]);
+    }
+    free(n);
+}
+
+void free_reseau(Reseau *r){
+    int i;
+    for(i=0;i<r->NbPt;i++){
+        free_chaine_cs(&(r->T_Pt[i]->Lincid));
+        free(r->T_Pt[i]);
+    }
+    free(r);
 }
