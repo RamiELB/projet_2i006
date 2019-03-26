@@ -1,16 +1,16 @@
 #include "avl.h"
 
 int main(){
-    char *nom ="Instance_Netlist/alea0100_050_10_097.net";
+    char *nom ="Instance_Netlist/alea0500_500_90_033.net";
     Netlist *n = lecture_netlist(nom);
-    intersec_avl(n);
+    intersec_balayage(n);
     sauvegarde_intersection(n,nom);
 }
 
 Noeud *Prem_Noeud_apres(ABR ab, double y){
 	if(ab == NULL) return NULL;
     
-    if(ab->y > y){
+    if(y < ab->y){
         ABR inf = Prem_Noeud_apres(ab->fg, y);
         if (inf != NULL){
             return inf;
@@ -117,7 +117,7 @@ void supprimer_avc_eq(ABR *ab, Segment *seg, Netlist *n){
         }else if((*a)->fd == NULL){
             *a = (*a)->fg;     
         }else{
-            ABR r = coupe_max(&((*ab)->fg));
+            ABR r = coupe_max(&((*a)->fg));
             r->fg = (*a)->fg;
             r->fd = (*a)->fd;
             *a = r;
@@ -132,11 +132,22 @@ ABR *chercher_noeud(ABR *ab, Segment *seg, Netlist *n){
         return ab;
     }
     double y = n->T_Res[seg->NumRes]->T_Pt[seg->p1]->y;
+
     if(y < (*ab)->y){
         return chercher_noeud(&((*ab)->fg), seg, n);
     }
-    return chercher_noeud(&((*ab)->fd), seg, n);
+    if(y > (*ab)->y){
+        return chercher_noeud(&((*ab)->fd), seg, n);
+    }
+    /* Il se peut qu'on ai 2 y égaux, et dans ce cas le segment peut être à droite ou à gauche à cause des rotations */
+    ABR *gauche = chercher_noeud(&((*ab)->fg), seg, n);
+    if((*gauche) != NULL){
+        return gauche;
+    }else{
+        return chercher_noeud(&((*ab)->fd), seg, n);
+    }
 }
+
 
 void hauteur_abr(ABR a){
     if(a != NULL){
@@ -170,7 +181,7 @@ void intersec_avl(Netlist *n){
             h = Prem_Noeud_apres(ab, y1);
             while(h != NULL && h->y < y2){
                 ajout_intersection(h->seg, seg);
-                h = Prem_Noeud_apres(h, h->y);
+                h = Prem_Noeud_apres(ab, h->y);
             }
         }
     }
