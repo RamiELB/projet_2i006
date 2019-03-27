@@ -1,6 +1,5 @@
 #include "avl.h"
 
-
 Noeud *Prem_Noeud_apres(ABR ab, double y){
 	if(ab == NULL) return NULL;
     
@@ -74,21 +73,25 @@ void insererElnt_avec_eq(ABR *ab, Segment *seg, Netlist *n){
 		}else{
 			insererElnt_avec_eq(&((*ab)->fd), seg, n);
 		}
-        int hg = hauteur((*ab)->fg);
-        int hd = hauteur((*ab)->fd);
-        (*ab)->hauteur = 1 + max(hg,hd);
-        if( hg - hd == 2){
-            if( hauteur( (*ab)->fg->fg ) < hauteur( (*ab)->fg->fd ) ){
-                rotationGauche( &((*ab)->fg));
-            }
-            rotationDroite(ab);
-        }else if ( hg - hd == -2 ){
-            if( hauteur( (*ab)->fd->fd ) < hauteur( (*ab)->fd->fg ) ){
-                rotationDroite( &((*ab)->fd));
-            }
-            rotationGauche(ab);
-	    }
+        rotations(ab);
     }
+}
+
+void rotations(ABR *ab){
+    int hg = hauteur((*ab)->fg);
+    int hd = hauteur((*ab)->fd);
+    (*ab)->hauteur = 1 + max(hg,hd);
+    if( hg - hd == 2){
+        if( hauteur( (*ab)->fg->fg ) < hauteur( (*ab)->fg->fd ) ){
+            rotationGauche( &((*ab)->fg));
+        }
+        rotationDroite(ab);
+    }else if ( hg - hd == -2 ){
+        if( hauteur( (*ab)->fd->fd ) < hauteur( (*ab)->fd->fg ) ){
+            rotationDroite( &((*ab)->fd));
+        }
+        rotationGauche(ab);
+	}
 }
 
 ABR coupe_max(ABR *ab){
@@ -116,9 +119,12 @@ void supprimer_avc_eq(ABR *ab, Segment *seg, Netlist *n){
             r->fd = (*a)->fd;
             *a = r;
         }
+        hauteur_abr(*ab);
+        if(*a != NULL){
+            rotations(a);
+        }
         free(temp); 
     }
-    hauteur_abr(*ab);
 }
 
 ABR *chercher_noeud(ABR *ab, Segment *seg, Netlist *n){

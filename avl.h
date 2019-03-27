@@ -17,28 +17,33 @@ typedef struct noeud {
 typedef Noeud* ABR;
 
 
-Noeud *Prem_Noeud_apres(ABR ab, double y);
+Noeud *Prem_Noeud_apres(ABR ab, double y); /* Renvoie le premier noeud d'ordonnée > à y */
 
-ABR *chercher_noeud(ABR *ab, Segment *seg, Netlist *n);
+ABR *chercher_noeud(ABR *ab, Segment *seg, Netlist *n); /* Renvoie le noeud correspondant au segment seg */
 
 ABR coupe_max(ABR *ab); /* Renvoie l'ABR correspondant au max de ab et le fixe à NULL dans ab */
 
-Noeud *creerFeuille(Segment *seg, Netlist *n);
+Noeud *creerFeuille(Segment *seg, Netlist *n); /* Alloue et crée un noeud */
 
 int max(int a, int b);
 
-int hauteur(ABR ab);
+int hauteur(ABR ab); /* Renvoie la hauteur de ab, 0 si NULL */
+
+void majhauteur(ABR ab); /* Mets à jour le noeud ABR en fonction de ses fils */
+
+void hauteur_abr(ABR a); /* Mets à jour toutes les hauteurs d'un ABR */
 
 void rotationDroite(ABR *ab);
 
 void rotationGauche(ABR *ab);
 
-void majhauteur(ABR ab);
+void rotations(ABR *ab); /* Fais les tests et effectue les rotations nécéssaires */
+
+void supprimer_avc_eq(ABR *ab, Segment *seg, Netlist *n);
 
 void insererElnt_avec_eq(ABR *ab, Segment *seg, Netlist *n);
 
 void intersec_avl(Netlist *n);
 
-void hauteur_abr(ABR a);
 
 #endif /* NETLIST_H */
