@@ -2,7 +2,7 @@
 
 int main(int argc, char** argv) {
     if(argc != 4){
-        fprintf(stderr, "Il faut en argument le nom du fichier de la netlist à créer, suivi des dimensions voulus\n");
+        fprintf(stderr, "Il faut en argument le nom du fichier de la netlist à créer, suivi des dimensions voulues\n");
         return 0;
     }
     char* fname = argv[1];

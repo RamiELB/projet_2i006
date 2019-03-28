@@ -23,6 +23,10 @@ avl.o: avl.c
 
 test: netlist.o intersection.o balayage.o avl.o
 	gcc -o test $(CFLAGS) netlist.o intersection.o balayage.o avl.o
-	
+
+benchmarking: benchmarking.c netlist.o intersection.o balayage.o avl.o
+	gcc -c $(CFGLAGS) benchmarking.c
+	gcc -o benchmarking $(CFLAGS) benchmarking.o netlist.o intersection.o balayage.o avl.o
+
 clean:
 	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html Instance_Netlist/*.int perf_intersec
