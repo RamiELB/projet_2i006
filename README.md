@@ -28,3 +28,4 @@ balayage.c balayage.h
 2. Finir les deux dernières questions de l'exercice 3
 3. Commencer le compte-rendu à rendre avant le 29/03
 4. Exercice 4
+a
