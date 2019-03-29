@@ -21,8 +21,11 @@ balayage.o: balayage.c
 avl.o: avl.c
 	gcc -c $(CFLAGS) avl.c
 
-test: netlist.o intersection.o balayage.o avl.o
-	gcc -o test $(CFLAGS) netlist.o intersection.o balayage.o avl.o
+graphe.o: graphe.c
+	gcc -c $(CFGLAGS) graphe.c
+
+test: netlist.o intersection.o graphe.o
+	gcc -o test $(CFLAGS) netlist.o intersection.o graphe.o
 
 benchmarking: benchmarking.c netlist.o intersection.o balayage.o avl.o
 	gcc -c $(CFGLAGS) benchmarking.c
