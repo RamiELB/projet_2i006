@@ -8,9 +8,6 @@
     /* Renvoie 1 si les segments se croisent, 0 sinon */
 int intersection(Netlist *n, Segment *seg1, Segment *seg2);
 
-    /* Renvoie le nombre de segments d'une netlist */
-int nb_segment(Netlist *n);
-
     /* Renvoie un tableau de tous les segments d'une netlist */
 Segment **tab_segments_netlist(Netlist *n, int *taille);
 

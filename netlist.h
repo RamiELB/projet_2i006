@@ -106,4 +106,10 @@ void free_netlist(Netlist *n);
 
 void free_reseau(Reseau *r);
 
+
+    /* Renvoie le nombre de segments d'une netlist */
+int nb_segment(Netlist *n);
+
+int nb_points(Netlist *n);
+
 #endif /* NETLIST_H */

@@ -259,3 +259,30 @@ void free_reseau(Reseau *r){
     }
     free(r);
 }
+
+int nb_segment(Netlist *n){
+    /* Fonction servant uniquement à compter les segments d'une netlist */
+    int i, j;
+    int cpt = 0;
+    Cell_segment *cs;
+    for(i=0;i<n->NbRes;i++){
+        for(j=0;j<n->T_Res[i]->NbPt;j++){
+            cs = n->T_Res[i]->T_Pt[j]->Lincid;
+            while(cs != NULL){
+                cpt++;
+                cs=cs->suiv;
+            }
+        }
+    }
+    cpt = cpt / 2; /* On a compté chaque segment 2 fois */
+    return cpt;
+}
+
+int nb_points(Netlist *n){
+    int i;
+    int cpt=0;
+    for(i=0;i<n->NbRes;i++){
+        cpt += n->T_Res[i]->NbPt;
+    }
+    return cpt;
+}
