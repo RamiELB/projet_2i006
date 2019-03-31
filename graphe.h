@@ -6,6 +6,7 @@
 #include "intersection.h"
 
 
+
 typedef struct arrete{
     int id; /* correspond à l'indice de l'arrete dans le graphe, -1 si c'est une arrete de continuite */
     int som1; /* id du sommet dans le graphe */

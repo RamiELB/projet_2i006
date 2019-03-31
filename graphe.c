@@ -1,11 +1,11 @@
 #include "graphe.h"
 
 int main(){
-    char*name = "Instance_Netlist/test.net";
+    char*name = "Instance_Netlist/c1.net";
     Netlist *n = lecture_netlist(name);
     intersect_naif(n);
     sauvegarde_intersection(n, name);
-    Graphe *g = creer_graphe(n, "Instance_Netlist/test.net.int");
+    Graphe *g = creer_graphe(n, "Instance_Netlist/c1.net.int");
 }
 
 Graphe *creer_graphe(Netlist *n, char *fic_int){
