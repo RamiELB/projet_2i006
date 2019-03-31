@@ -1,5 +1,6 @@
 #include "graphe.h"
 
+/*
 int main(){
     char*name = "Instance_Netlist/test.net";
     Netlist *n = lecture_netlist(name);
@@ -7,6 +8,7 @@ int main(){
     sauvegarde_intersection(n, name);
     Graphe *g = creer_graphe(n, "Instance_Netlist/test.net.int");
 }
+*/
 
 Graphe *creer_graphe(Netlist *n, char *fic_int){
     printf("Création du graphe...\n");

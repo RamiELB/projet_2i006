@@ -31,5 +31,13 @@ benchmarking: benchmarking.c netlist.o intersection.o balayage.o avl.o
 	gcc -c $(CFGLAGS) benchmarking.c
 	gcc -o benchmarking $(CFLAGS) benchmarking.o netlist.o intersection.o balayage.o avl.o
 
+visugraphe: visugraphe.c netlist.o graphe.o SVGwriter.o intersection.o
+	gcc -c $(CFLAGS) visugraphe.c
+	gcc -o visugraphe $(CFLAGS) visugraphe.o netlist.o graphe.o SVGwriter.o intersection.o
+
+creationint: creationint.c netlist.o intersection.o
+	gcc -c $(CFLAGS) creationint.c
+	gcc -o creationint $(CFLAGS) creationint.o netlist.o intersection.o
+
 clean:
-	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html Instance_Netlist/*.int perf_intersec
+	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html perf_intersec
