@@ -35,9 +35,9 @@ visugraphe: visugraphe.c netlist.o graphe.o SVGwriter.o intersection.o
 	gcc -c $(CFLAGS) visugraphe.c
 	gcc -o visugraphe $(CFLAGS) visugraphe.o netlist.o graphe.o SVGwriter.o intersection.o
 
-creationint: creationint.c netlist.o intersection.o
+creationint: creationint.c netlist.o intersection.o balayage.o
 	gcc -c $(CFLAGS) creationint.c
-	gcc -o creationint $(CFLAGS) creationint.o netlist.o intersection.o
+	gcc -o creationint $(CFLAGS) creationint.o netlist.o intersection.o balayage.o
 
 clean:
 	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html perf_intersec
