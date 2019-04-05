@@ -7,7 +7,7 @@ int main(int argc, char** argv){
         return 0;
     }
     Netlist *n = lecture_netlist(argv[1]);
-    intersec_balayage(n);
-    
-    sauvegarde_intersection(n, argv[1]);
+        intersec_balayage(n);
+        
+        sauvegarde_intersection(n, argv[1]);
 }

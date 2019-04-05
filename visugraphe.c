@@ -25,6 +25,7 @@ int main(int argc, char** argv) {
         dessine_sommets_et_continuite(n, g->tab_sommets[i], &svg);
     }
     for(i=0; i<(g->nb_conflits); i++){
+        SVGlineColor(&svg, Red);
         dessine_conflits(n, g, g->tab_conflits[i], &svg);
     }
     SVGfinalize(&svg);
