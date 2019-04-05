@@ -7,7 +7,6 @@
 #include "SVGwriter.h"
 
 
-
 typedef struct arrete{
     int id; /* correspond à l'indice de l'arrete dans le graphe, -1 si c'est une arrete de continuite */
     int som1; /* id du sommet dans le graphe */
@@ -18,7 +17,6 @@ typedef struct elem_arrete{
     Arrete *a;
     struct elem_arrete *suiv;
 } Elem_Arrete;
-
 
 typedef struct sommet{
     Segment *seg; /* NULL si le sommet correspond à un point */
