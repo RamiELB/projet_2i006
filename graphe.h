@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "netlist.h"
 #include "intersection.h"
+#include "balayage.h"
 #include "SVGwriter.h"
 
 

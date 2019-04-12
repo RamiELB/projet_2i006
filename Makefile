@@ -24,6 +24,9 @@ avl.o: avl.c
 graphe.o: graphe.c
 	gcc -c $(CFGLAGS) graphe.c
 
+via_cycle.o: via_cycle.c
+	gcc -c $(CFGLAGS) via_cycle.c
+
 test: netlist.o intersection.o graphe.o
 	gcc -o test $(CFLAGS) netlist.o intersection.o graphe.o
 
@@ -39,5 +42,9 @@ creationint: creationint.c netlist.o intersection.o balayage.o
 	gcc -c $(CFLAGS) creationint.c
 	gcc -o creationint $(CFLAGS) creationint.o netlist.o intersection.o balayage.o
 
+testviacycle: netlist.o via_cycle.o graphe.o balayage.o intersection.o
+	gcc -o testviacycle netlist.o via_cycle.o graphe.o balayage.o intersection.o
+
+
 clean:
-	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html perf_intersec
+	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html perf_intersec testviacycle

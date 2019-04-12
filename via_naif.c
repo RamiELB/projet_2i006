@@ -14,7 +14,7 @@ int *tab_face(Graphe *g){
         }else{
             tab_face[i] = 3;
             premiere_arrete = g->tab_sommets[i]->liste_arretes;
-            if(arr_cour->a->som1 != i)
+            if(premiere_arrete->a->som1 != i)
                 id_premier_sommet = premiere_arrete->a->som1;
             else
                 id_premier_sommet = premiere_arrete->a->som2;
