@@ -29,6 +29,7 @@ int *tab_face(Graphe *g){
 
                 if (g->tab_sommets[id_premier_sommet]->seg->HouV != g->tab_sommets[id_sommet_actuel]->seg->HouV)
                     tab_face[i] = 0;
+                arr_cour = arr_cour->suiv;
             }
         }
     }
