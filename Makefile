@@ -45,6 +45,5 @@ creationint: creationint.c netlist.o intersection.o balayage.o
 testviacycle: netlist.o via_cycle.o graphe.o balayage.o intersection.o
 	gcc -o testviacycle netlist.o via_cycle.o graphe.o balayage.o intersection.o
 
-
 clean:
 	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html perf_intersec testviacycle

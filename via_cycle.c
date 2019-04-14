@@ -10,11 +10,12 @@ int main(){
 
 
 Cell_sommet *detecte_cycle_impair(Graphe *g, int *S, int *M, int *tab_peres, int i, int pere, int alternance){
+    //printf("Appel sur S[%d] = %d, M = %d, pere : M[%d] = %d, alternance = %d\n", i, S[i], M[i],  pere, M[pere], alternance);
     if(M[i] == 0 || S[i] == 0)
         return NULL;
     
     tab_peres[i] = pere;
-    if(M[i] == M[pere]){
+    if(M[i] != -1 && M[i] == M[pere]){
         /* On détecte un cycle impair*/
         return creation_chaine_cycle(g, M, tab_peres, i, NULL, i);
     }
@@ -87,7 +88,6 @@ int *Ajout_vias_cycle_impair(Graphe *g){
                 cycle_impair = detecte_cycle_impair(g, S, M, tab_peres, i, 0, 1);
                 ajout_via_cycle(cycle_impair, S, M);
                 for(j=0;j<g->nb_sommets;j++){
-                    M[j] = -1;
                     tab_peres[j] = -1;
                 }
             } while(cycle_impair != NULL) ;
@@ -103,8 +103,6 @@ void ajout_via_cycle(Cell_sommet *cycle_impair, int *S, int *M){
         if(cs->som->pt != NULL){
             S[cs->som->id] = 0;
             M[cs->som->id] = 0;
-        }else{
-            S[cs->som->id] = M[cs->som->id];
         }
         free(cs);
         cs = prec->suiv;
@@ -130,6 +128,12 @@ void ajout_faces_rec(Graphe *g, int *S, Sommet *som, int face){
         for(ea = som->liste_arretes; ea != NULL ; ea=ea->suiv){
             id_som_succ = autre_sommet(ea, som->id);
             ajout_faces_rec(g, S, g->tab_sommets[id_som_succ], alterne(face));
+        }
+    }else if(S[som->id] == 0){
+        S[som->id] = alterne(face);
+        for(ea = som->liste_arretes; ea != NULL ; ea=ea->suiv){
+            id_som_succ = autre_sommet(ea, som->id);
+            ajout_faces_rec(g, S, g->tab_sommets[id_som_succ], face);
         }
     }
 }
