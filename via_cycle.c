@@ -1,39 +1,44 @@
 #include "via_cycle.h"
 
 int main(){
-    Netlist *n = lecture_netlist("Instance_Netlist/test.net");
+    Netlist *n = lecture_netlist("Instance_Netlist/alea0030_030_10_088.net");
     intersec_balayage(n);
-    Graphe *g = creer_graphe(n, "Instance_Netlist/test.net.int");
+    Graphe *g = creer_graphe(n, "Instance_Netlist/alea0030_030_10_088.net.int");
     int *S = Ajout_vias_cycle_impair(g);
     S = bicolore(g, S);
 }
 
 
 Cell_sommet *detecte_cycle_impair(Graphe *g, int *S, int *M, int *tab_peres, int i, int pere, int alternance){
-    //printf("Appel sur S[%d] = %d, M = %d, pere : M[%d] = %d, alternance = %d\n", i, S[i], M[i],  pere, M[pere], alternance);
+    printf("Appel sur S[%d] = %d, M = %d, pere : M[%d] = %d, alternance = %d\n", i, S[i], M[i],  pere, M[pere], alternance);
     if(M[i] == 0 || S[i] == 0)
         return NULL;
     
     tab_peres[i] = pere;
-    if(M[i] != -1 && M[i] == M[pere]){
+
+    if(M[i] == M[pere] && M[i] != -1 /* Pour le premier appel on a M[0] =-1 et il est son propre père*/){
         /* On détecte un cycle impair*/
+        printf("Cycle impair trouvé\n");
         return creation_chaine_cycle(g, M, tab_peres, i, NULL, i);
     }
-    M[i] = alternance;
-    int id_som_succ;
-    Sommet *s = g->tab_sommets[i];
-    Elem_Arrete *ea = s->liste_arretes;
-    Cell_sommet *cs;
-    while(ea != NULL){
-        id_som_succ = autre_sommet(ea, i);
-        if(id_som_succ != pere){
-            cs = detecte_cycle_impair(g, S, M, tab_peres, id_som_succ, i, alterne(alternance));
-            if(cs != NULL){
-                /* Si on a trouvé un cycle impair, on stop */
-                return cs;
+    
+    if(M[i] == -1){    
+        M[i] = alternance;
+        int id_som_succ;
+        Sommet *s = g->tab_sommets[i];
+        Elem_Arrete *ea = s->liste_arretes;
+        Cell_sommet *cs;
+        while(ea != NULL){
+            id_som_succ = autre_sommet(ea, i);
+            if(pere != id_som_succ){
+                cs = detecte_cycle_impair(g, S, M, tab_peres, id_som_succ, i, alterne(alternance));
+                if(cs != NULL){
+                    /* Si on a trouvé un cycle impair, on stop */
+                    return cs;
+                }
             }
+            ea = ea->suiv;
         }
-        ea = ea->suiv;
     }
     return NULL;
 }
@@ -51,6 +56,7 @@ int alterne(int a){
 }
 
 Cell_sommet *creation_chaine_cycle(Graphe *g, int *M, int *tab_peres, int i, Cell_sommet *chaine_sommets, int premier_appel){
+    //printf("i = %d, premier appel = %d, pere : %d\n", i, premier_appel, tab_peres[i]);
     Cell_sommet *cs = nouveau_cs(g->tab_sommets[i]);
     cs->suiv = chaine_sommets;
     if(tab_peres[i] == -1){
@@ -58,7 +64,7 @@ Cell_sommet *creation_chaine_cycle(Graphe *g, int *M, int *tab_peres, int i, Cel
         return NULL;
     }
     if(tab_peres[i] != premier_appel){
-        return creation_chaine_cycle(g, M, tab_peres, i, cs, premier_appel);
+        return creation_chaine_cycle(g, M, tab_peres, tab_peres[i], cs, premier_appel);
     }
     return cs;
 }
