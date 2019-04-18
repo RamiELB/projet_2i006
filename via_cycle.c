@@ -13,7 +13,7 @@ int detecte_cycle_impair(Graphe *g, int *S, int *M, int *tab_peres, int i, int p
     //printf("Appel sur S[%d] = %d, M = %d, pere : M[%d] = %d, alternance = %d\n", i, S[i], M[i],  pere, M[pere], alternance);
     if(M[i] == 0 || S[i] == 0)
         return -1;
-
+    printf("%d appel %d\n", pere, i);
     if(M[i] == M[pere] && i != pere /* Pour le premier appel on a i qui est son propre père*/){
         /* On détecte un cycle impair*/
         tab_peres[i] = pere;
@@ -59,16 +59,33 @@ int alterne(int a){
 }
 
 Cell_sommet *creation_chaine_cycle(Graphe *g, int *M, int *tab_peres, int i, Cell_sommet *chaine_sommets, int premier_appel){
-    /*for(i=0;i<g->nb_sommets;i++){
-        if(tab_peres[i] == premier_appel)
-            printf("%d : %d FIRST CALL\n", i, tab_peres[i]);
-        
-    }*/
+
+    if(i == tab_peres[i]){
+        fprintf(stderr, "Erreur lors de la remontée dans le tab_peres, echec de l'ajout du via (%d)\n", i);
+        return NULL;
+    }
     if(i == -1)
         return NULL;
-    //printf("i = %d, premier appel = %d, pere : %d\n", i, premier_appel, tab_peres[i]);
+
+        /* Chainage du sommet */
     Cell_sommet *cs = nouveau_cs(g->tab_sommets[i]);
     cs->suiv = chaine_sommets;
+
+
+
+    /* Il y a certains cas où le cycle impair est trouvé en un sommet qui ne fait aucun appel récursif, mais qui se fait lui
+        même appelé par 2 sommets différents. Dans ce cas là il est impossible de le retrouver à partir de tab_peres, il faut
+        dont faire une recherche dans les voisins direct de chaque sommet */
+    Elem_Arrete *ea = g->tab_sommets[i]->liste_arretes;
+    int id_som_succ;
+    while(ea != NULL){
+        id_som_succ = autre_sommet(ea, i);
+        if (id_som_succ == premier_appel)
+            return cs;
+        ea = ea->suiv;
+    }
+
+    //printf("i = %d, premier appel = %d, pere : %d\n", i, premier_appel, tab_peres[i]);
     if(tab_peres[i] == -1){
         fprintf(stderr, "Erreur : un pere n'est pas indiqué dans le tableau\n");
         return NULL;
@@ -106,9 +123,10 @@ int *Ajout_vias_cycle_impair(Graphe *g){
                 res = detecte_cycle_impair(g, S, M, tab_peres, i, i, 1);
                 cycle_impair = creation_chaine_cycle(g, M, tab_peres, res, NULL, res);
                 ajout_via_cycle(cycle_impair, S, M, 0);
+                printf("\n\n");
                 for(j=0;j<g->nb_sommets;j++){
-                    if(M[i] != 0)
-                        M[i] = -1;
+                    //if(M[i] != 0)
+                    //    M[i] = -1;
                     tab_peres[j] = -1;
                 }
             } while(res != -1) ;
