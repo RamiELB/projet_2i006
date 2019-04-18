@@ -1,9 +1,9 @@
 #include "via_cycle.h"
 
 int main(){
-    Netlist *n = lecture_netlist("Instance_Netlist/c1.net");
+    Netlist *n = lecture_netlist("Instance_Netlist/c4.net");
     intersec_balayage(n);
-    Graphe *g = creer_graphe(n, "Instance_Netlist/c1.net.int");
+    Graphe *g = creer_graphe(n, "Instance_Netlist/c4.net.int");
     int *S = Ajout_vias_cycle_impair(g);
     S = bicolore(g, S);
 }
@@ -13,11 +13,13 @@ int detecte_cycle_impair(Graphe *g, int *S, int *M, int *tab_peres, int i, int p
     //printf("Appel sur S[%d] = %d, M = %d, pere : M[%d] = %d, alternance = %d\n", i, S[i], M[i],  pere, M[pere], alternance);
     if(M[i] == 0 || S[i] == 0)
         return -1;
-    printf("%d appel %d\n", pere, i);
-    if(M[i] == M[pere] && i != pere /* Pour le premier appel on a i qui est son propre père*/){
+    //printf("%d appel %d\n", pere, i);
+    if(i == pere){
+        tab_peres[i] = i;
+    }else if(M[i] == M[pere] && pere != tab_peres[pere] /* Pour le premier appel on a i qui est son propre père*/){
         /* On détecte un cycle impair*/
         tab_peres[i] = pere;
-        printf("Cycle impair trouvé en %d, pere : %d\n", i, pere);
+        printf("Cycle impair trouvé en %d\n", i, pere);
         return i;
     }
     
@@ -67,6 +69,7 @@ Cell_sommet *creation_chaine_cycle(Graphe *g, int *M, int *tab_peres, int i, Cel
     if(i == -1)
         return NULL;
 
+
         /* Chainage du sommet */
     Cell_sommet *cs = nouveau_cs(g->tab_sommets[i]);
     cs->suiv = chaine_sommets;
@@ -80,7 +83,7 @@ Cell_sommet *creation_chaine_cycle(Graphe *g, int *M, int *tab_peres, int i, Cel
     int id_som_succ;
     while(ea != NULL){
         id_som_succ = autre_sommet(ea, i);
-        if (id_som_succ == premier_appel)
+        if (id_som_succ == premier_appel && tab_peres[i] != id_som_succ)
             return cs;
         ea = ea->suiv;
     }
@@ -123,10 +126,9 @@ int *Ajout_vias_cycle_impair(Graphe *g){
                 res = detecte_cycle_impair(g, S, M, tab_peres, i, i, 1);
                 cycle_impair = creation_chaine_cycle(g, M, tab_peres, res, NULL, res);
                 ajout_via_cycle(cycle_impair, S, M, 0);
-                printf("\n\n");
                 for(j=0;j<g->nb_sommets;j++){
-                    //if(M[i] != 0)
-                    //    M[i] = -1;
+                    //if(M[j] != 0)
+                    //    M[j] = -1;
                     tab_peres[j] = -1;
                 }
             } while(res != -1) ;
