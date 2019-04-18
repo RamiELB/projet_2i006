@@ -1,14 +1,14 @@
 #include "via_cycle.h"
 
-/*
-int main(){
+
+/*int main(){
     Netlist *n = lecture_netlist("Instance_Netlist/c4.net");
     intersec_balayage(n);
     Graphe *g = creer_graphe(n, "Instance_Netlist/c4.net.int");
     int *S = Ajout_vias_cycle_impair(g);
     S = bicolore(g, S);
-}
-*/
+}*/
+
 
 int detecte_cycle_impair(Graphe *g, int *S, int *M, int *tab_peres, int i, int pere, int alternance){
     //printf("Appel sur S[%d] = %d, M = %d, pere : M[%d] = %d, alternance = %d\n", i, S[i], M[i],  pere, M[pere], alternance);
@@ -20,7 +20,7 @@ int detecte_cycle_impair(Graphe *g, int *S, int *M, int *tab_peres, int i, int p
     }else if(M[i] == M[pere] && pere != tab_peres[pere] /* Pour le premier appel on a i qui est son propre père*/){
         /* On détecte un cycle impair*/
         tab_peres[i] = pere;
-        printf("Cycle impair trouvé en %d\n", i, pere);
+        printf("Cycle impair trouvé en %d\n", i);
         return i;
     }
     
@@ -88,14 +88,15 @@ Cell_sommet *creation_chaine_cycle(Graphe *g, int *M, int *tab_peres, int i, Cel
             return cs;
         ea = ea->suiv;
     }
-
     //printf("i = %d, premier appel = %d, pere : %d\n", i, premier_appel, tab_peres[i]);
     if(tab_peres[i] == -1){
         fprintf(stderr, "Erreur : un pere n'est pas indiqué dans le tableau\n");
         return NULL;
     }
-    if(tab_peres[i] != premier_appel){
-        return creation_chaine_cycle(g, M, tab_peres, tab_peres[i], cs, premier_appel);
+    int pere = tab_peres[i];
+    tab_peres[i] = -1;
+    if(pere != premier_appel){
+        return creation_chaine_cycle(g, M, tab_peres, pere, cs, premier_appel);
     }else{
         return cs;
     }
@@ -127,11 +128,11 @@ int *Ajout_vias_cycle_impair(Graphe *g){
                 res = detecte_cycle_impair(g, S, M, tab_peres, i, i, 1);
                 cycle_impair = creation_chaine_cycle(g, M, tab_peres, res, NULL, res);
                 ajout_via_cycle(cycle_impair, S, M, 0);
-                for(j=0;j<g->nb_sommets;j++){
+                /*for(j=0;j<g->nb_sommets;j++){
                     //if(M[j] != 0)
                     //    M[j] = -1;
                     tab_peres[j] = -1;
-                }
+                }*/
             } while(res != -1) ;
         }
     }
