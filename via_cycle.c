@@ -1,5 +1,6 @@
 #include "via_cycle.h"
 
+/*
 int main(){
     Netlist *n = lecture_netlist("Instance_Netlist/c4.net");
     intersec_balayage(n);
@@ -7,7 +8,7 @@ int main(){
     int *S = Ajout_vias_cycle_impair(g);
     S = bicolore(g, S);
 }
-
+*/
 
 int detecte_cycle_impair(Graphe *g, int *S, int *M, int *tab_peres, int i, int pere, int alternance){
     //printf("Appel sur S[%d] = %d, M = %d, pere : M[%d] = %d, alternance = %d\n", i, S[i], M[i],  pere, M[pere], alternance);
