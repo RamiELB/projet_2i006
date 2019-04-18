@@ -27,11 +27,14 @@ graphe.o: graphe.c
 via_cycle.o: via_cycle.c
 	gcc -c $(CFGLAGS) via_cycle.c
 
+via_naif.o: via_naif.c
+	gcc -c $(CFLAGS) via_naif.c	
+
 test: netlist.o intersection.o graphe.o
 	gcc -o test $(CFLAGS) netlist.o intersection.o graphe.o
 
 benchmarking: benchmarking.c netlist.o intersection.o balayage.o avl.o
-	gcc -c $(CFGLAGS) benchmarking.c
+	gcc -c $(CFLAGS) benchmarking.c
 	gcc -o benchmarking $(CFLAGS) benchmarking.o netlist.o intersection.o balayage.o avl.o
 
 visugraphe: visugraphe.c netlist.o graphe.o SVGwriter.o intersection.o
@@ -41,6 +44,10 @@ visugraphe: visugraphe.c netlist.o graphe.o SVGwriter.o intersection.o
 creationint: creationint.c netlist.o intersection.o balayage.o
 	gcc -c $(CFLAGS) creationint.c
 	gcc -o creationint $(CFLAGS) creationint.o netlist.o intersection.o balayage.o
+
+visuvianaif: visuvianaif.c via_naif.o netlist.o graphe.o SVGwriter.o intersection.o
+	gcc -c $(CFLAGS) visuvianaif.c
+	gcc -o visuvianaif $(CFLAGS) visuvianaif.o via_naif.o netlist.o graphe.o SVGwriter.o intersection.o
 
 testviacycle: netlist.o via_cycle.o graphe.o balayage.o intersection.o
 	gcc -o testviacycle netlist.o via_cycle.o graphe.o balayage.o intersection.o
