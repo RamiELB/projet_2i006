@@ -58,4 +58,4 @@ essai: essai.c netlist.o via_cycle.o via_naif.o graphe.o balayage.o intersection
 	gcc -o essai $(CFLAGS) essai.o netlist.o via_cycle.o via_naif.o graphe.o balayage.o intersection.o
 
 clean:
-	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html perf_intersec test* vgcore* .vscode/
+	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html perf_intersec test* vgcore* .vscode/ essai

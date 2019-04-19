@@ -1,27 +1,48 @@
 #include "essai.h"
 
-int main(){
+int main(int argc, char **argv){
+    if(argc != 3){
+        fprintf(stderr, "Il faut 2 arguments : le chemin du fichier .net puis le chemin du fichier .int\nExemple : ./essai Instance_Netlist/c1.net Instance_Netlist/c1.net.int\n");
+                return 0;
+    }
     clock_t temps_initial;
     clock_t temps_final;
     double temps_cpu;
-    char* fic = "Instance_Netlist/c1.net";
-    char* ficint = "Instance_Netlist/c1.net.int";
+    char* fic = argv[1];
+    char* ficint = argv[2];
     Netlist* n = lecture_netlist(fic);
     Graphe* g = creer_graphe(n, ficint);
-    
+    int *S;
     printf("Temps de calcul pour attribuer une face à chaque segment\n");
     temps_initial = clock();
-    tab_face(g);
+    S = tab_face(g);
     temps_final = clock();
     temps_cpu = ((double)(temps_final - temps_initial));
-    printf("Methode naive : %f\n", temps_cpu);
+
+    int nbvias = 0;
+    int i;
+    for(i=0;i<g->nb_sommets;i++){
+        if(S[i] == 0){
+            nbvias++;
+        }
+    }
+    printf("Methode naive\n vias : %d, temps : %f\n\n", nbvias, temps_cpu);
     
+
     temps_initial = clock();
-    int *S = Ajout_vias_cycle_impair(g);
+    S = Ajout_vias_cycle_impair(g);
     S = bicolore(g, S);
     temps_final = clock();
     temps_cpu = ((double)(temps_final - temps_initial));
-    printf("Methode cycle : %f\n", temps_cpu);
+
+
+    nbvias = 0;
+    for(i=0;i<g->nb_sommets;i++){
+        if(S[i] == 0){
+            nbvias++;
+        }
+    }
+    printf("Methode cycle\nvias : %d, temps : %f\n\n", nbvias, temps_cpu);
     
     return EXIT_SUCCESS;
 }

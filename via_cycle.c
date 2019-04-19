@@ -111,6 +111,9 @@ Cell_sommet *nouveau_cs(Sommet *s){
 
 
 int *Ajout_vias_cycle_impair(Graphe *g){
+    if(g == NULL){
+        return NULL;
+    }
     int *S = malloc(g->nb_sommets * sizeof(int));
     int *M = malloc(g->nb_sommets * sizeof(int));
     int *tab_peres = malloc(g->nb_sommets * sizeof(int));
@@ -174,7 +177,6 @@ void ajout_faces_rec(Graphe *g, int *S, Sommet *som, int face){
             ajout_faces_rec(g, S, g->tab_sommets[id_som_succ], alterne(face));
         }
     }else if(S[som->id] == 0){
-        S[som->id] = alterne(face);
         for(ea = som->liste_arretes; ea != NULL ; ea=ea->suiv){
             id_som_succ = autre_sommet(ea, som->id);
             ajout_faces_rec(g, S, g->tab_sommets[id_som_succ], face);

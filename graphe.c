@@ -12,6 +12,10 @@ int main(){
 
 Graphe *creer_graphe(Netlist *n, char *fic_int){
     printf("Création du graphe...\n");
+    if(n == NULL){
+        fprintf(stderr, "Netlist NULL, impossible de créer le graphe\n");
+        return NULL;
+    }
     Graphe *g = malloc(sizeof(Graphe));
 
     sommets_graphe(g, n); /* Rempli et alloue tab_sommets et nb_sommets */

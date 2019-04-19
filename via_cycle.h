@@ -1,5 +1,5 @@
-#ifndef CYCLE_H
-#define CYCLE_H
+#ifndef VIA_CYCLE_H
+#define VIA_CYCLE_H
 #include <stdio.h>
 #include <stdlib.h>
 #include "graphe.h"

@@ -1,6 +1,9 @@
 #include "via_naif.h"
 
 int *tab_face(Graphe *g){
+    if(g == NULL){
+        return NULL;
+    }
     int i;
     int id_premier_sommet;
     int id_sommet_actuel;
