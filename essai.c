@@ -17,7 +17,7 @@ int main(int argc, char **argv){
     temps_initial = clock();
     S = tab_face(g);
     temps_final = clock();
-    temps_cpu = 1000*((double)(temps_final - temps_initial)/ CLOCKS_PER_SEC);
+    temps_cpu = ((double)(temps_final - temps_initial));
 
     int nbvias = 0;
     int i;
@@ -26,14 +26,14 @@ int main(int argc, char **argv){
             nbvias++;
         }
     }
-    printf("Methode naive\nvias : %d, temps : %f ms\n\n", nbvias, temps_cpu);
+    printf("Methode naive\nvias : %d, temps : %f\n\n", nbvias, temps_cpu);
     
 
     temps_initial = clock();
     S = Ajout_vias_cycle_impair(g);
     S = bicolore(g, S);
     temps_final = clock();
-    temps_cpu = 1000*((double)(temps_final - temps_initial)/ CLOCKS_PER_SEC);
+    temps_cpu = ((double)(temps_final - temps_initial));
 
 
     nbvias = 0;
@@ -42,7 +42,7 @@ int main(int argc, char **argv){
             nbvias++;
         }
     }
-    printf("Methode cycle\nvias : %d, temps : %f ms\n", nbvias, temps_cpu);
+    printf("Methode cycle\nvias : %d, temps : %f\n", nbvias, temps_cpu);
     
     return EXIT_SUCCESS;
 }
