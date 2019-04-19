@@ -53,8 +53,9 @@ visuviacycle: visuviacycle.c via_cycle.o netlist.o graphe.o SVGwriter.o intersec
 	gcc -c $(CFLAGS) visuviacycle.c
 	gcc -o visuviacycle $(CFLAGS) visuviacycle.o via_cycle.o netlist.o graphe.o SVGwriter.o intersection.o
 
-testviacycle: netlist.o via_cycle.o graphe.o balayage.o intersection.o
-	gcc -o testviacycle netlist.o via_cycle.o graphe.o balayage.o intersection.o
+essai: essai.c netlist.o via_cycle.o via_naif.o graphe.o balayage.o intersection.o
+	gcc -c $(CFLAGS) essai.c 
+	gcc -o essai $(CFLAGS) essai.o netlist.o via_cycle.o via_naif.o graphe.o balayage.o intersection.o
 
 clean:
 	rm -rf *.o VisuNetList *.html Instance_Netlist/*.html perf_intersec test* vgcore* .vscode/
