@@ -1,5 +1,5 @@
-#ifndef VIA_CYCLE_H
-#define VIA_CYCLE_H
+#ifndef CYCLE_H
+#define CYCLE_H
 #include <stdio.h>
 #include <stdlib.h>
 #include "graphe.h"
@@ -7,6 +7,7 @@
 typedef struct cell_sommet{
     Sommet *som; 
     struct cell_sommet *suiv;
+
 } Cell_sommet;
 
 int *Ajout_vias_cycle_impair(Graphe *g);

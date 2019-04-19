@@ -20,7 +20,7 @@ int detecte_cycle_impair(Graphe *g, int *S, int *M, int *tab_peres, int i, int p
     }else if(M[i] == M[pere] && pere != tab_peres[pere] /* Pour le premier appel on a i qui est son propre père*/){
         /* On détecte un cycle impair*/
         tab_peres[i] = pere;
-        printf("Cycle impair trouvé en %d\n", i);
+        //printf("Cycle impair trouvé en %d\n", i);
         return i;
     }
     

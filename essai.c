@@ -4,8 +4,8 @@ int main(){
     clock_t temps_initial;
     clock_t temps_final;
     double temps_cpu;
-    char* fic = "Instance_Netlist/test.net";
-    char* ficint = "Instance_Netlist/test.net.int";
+    char* fic = "Instance_Netlist/c1.net";
+    char* ficint = "Instance_Netlist/c1.net.int";
     Netlist* n = lecture_netlist(fic);
     Graphe* g = creer_graphe(n, ficint);
     
@@ -21,8 +21,7 @@ int main(){
     S = bicolore(g, S);
     temps_final = clock();
     temps_cpu = ((double)(temps_final - temps_initial));
-    printf("Methode naive : %f\n", temps_cpu);
+    printf("Methode cycle : %f\n", temps_cpu);
     
     return EXIT_SUCCESS;
-
 }
