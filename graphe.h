@@ -28,9 +28,9 @@ typedef struct sommet{
 
 typedef struct graphe{
     int nb_sommets;
-    int nb_conflits;
+    //int nb_conflits;
     Sommet **tab_sommets;
-    Arrete **tab_conflits;
+    //Arrete **tab_conflits;
 } Graphe;
 
 
