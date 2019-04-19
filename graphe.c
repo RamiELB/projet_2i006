@@ -11,7 +11,7 @@ int main(){
 */
 
 Graphe *creer_graphe(Netlist *n, char *fic_int){
-    printf("Création du graphe...\n");
+    //printf("Création du graphe...\n");
     if(n == NULL){
         fprintf(stderr, "Netlist NULL, impossible de créer le graphe\n");
         return NULL;
@@ -24,7 +24,7 @@ Graphe *creer_graphe(Netlist *n, char *fic_int){
 
     arretes_continu(g, n); /* Rempli les arretes de continuite */
 
-    printf("Graphe crée avec succès\n");
+    //printf("Graphe crée avec succès\n");
     return g;
 }
 

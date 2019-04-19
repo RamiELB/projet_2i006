@@ -13,11 +13,11 @@ int main(int argc, char **argv){
     Netlist* n = lecture_netlist(fic);
     Graphe* g = creer_graphe(n, ficint);
     int *S;
-    printf("Temps de calcul pour attribuer une face à chaque segment\n");
+    printf("Temps de calcul pour attribuer une face à chaque segment\n\n\n");
     temps_initial = clock();
     S = tab_face(g);
     temps_final = clock();
-    temps_cpu = ((double)(temps_final - temps_initial));
+    temps_cpu = 1000*((double)(temps_final - temps_initial)/ CLOCKS_PER_SEC);
 
     int nbvias = 0;
     int i;
@@ -26,14 +26,14 @@ int main(int argc, char **argv){
             nbvias++;
         }
     }
-    printf("Methode naive\n vias : %d, temps : %f\n\n", nbvias, temps_cpu);
+    printf("Methode naive\nvias : %d, temps : %fms\n\n", nbvias, temps_cpu);
     
 
     temps_initial = clock();
     S = Ajout_vias_cycle_impair(g);
     S = bicolore(g, S);
     temps_final = clock();
-    temps_cpu = ((double)(temps_final - temps_initial));
+    temps_cpu = 1000*((double)(temps_final - temps_initial)/ CLOCKS_PER_SEC);
 
 
     nbvias = 0;
@@ -42,7 +42,7 @@ int main(int argc, char **argv){
             nbvias++;
         }
     }
-    printf("Methode cycle\nvias : %d, temps : %f\n\n", nbvias, temps_cpu);
+    printf("Methode cycle\nvias : %d, temps : %fms\n", nbvias, temps_cpu);
     
     return EXIT_SUCCESS;
 }
