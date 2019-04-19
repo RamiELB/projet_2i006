@@ -26,7 +26,7 @@ int main(int argc, char **argv){
             nbvias++;
         }
     }
-    printf("Methode naive\nvias : %d, temps : %fms\n\n", nbvias, temps_cpu);
+    printf("Methode naive\nvias : %d, temps : %f ms\n\n", nbvias, temps_cpu);
     
 
     temps_initial = clock();
@@ -42,7 +42,7 @@ int main(int argc, char **argv){
             nbvias++;
         }
     }
-    printf("Methode cycle\nvias : %d, temps : %fms\n", nbvias, temps_cpu);
+    printf("Methode cycle\nvias : %d, temps : %f ms\n", nbvias, temps_cpu);
     
     return EXIT_SUCCESS;
 }
