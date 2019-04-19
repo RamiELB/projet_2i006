@@ -45,8 +45,8 @@ void arretes_continu(Graphe *g, Netlist *n){
 }
 
 void arretes_conflits(Graphe *g, char* fic_int, Netlist *n){
-    //g->nb_conflits = compte_intersec(fic_int);
-    //g->tab_conflits = (Arrete **) malloc(g->nb_conflits * sizeof(Arrete *));
+    g->nb_conflits = compte_intersec(fic_int);
+    g->tab_conflits = (Arrete **) malloc(g->nb_conflits * sizeof(Arrete *));
     FILE *f = fopen(fic_int, "r");
     if(f == NULL){
         fprintf(stderr, "Erreur ouverture fichier dans arretes_conflits\n");
@@ -65,7 +65,7 @@ void arretes_conflits(Graphe *g, char* fic_int, Netlist *n){
         som1 = chercher_sommet_seg(seg1, g);
         som2 = chercher_sommet_seg(seg2, g);
         a = creer_arrete(id, som1, som2);
-        //g->tab_conflits[id] = a;
+        g->tab_conflits[id] = a;
         ajout_arrete(g->tab_sommets, a);
         id++;
     }
